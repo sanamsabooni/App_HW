@@ -12,6 +12,7 @@ load_dotenv(override=True)
 ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID")
 ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET")
 ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN")
+ZOHO_BASE = os.getenv("ZOHO_BASE")
 ZOHO_REDIRECT_URI = os.getenv("ZOHO_REDIRECT_URI")
 ZOHO_API_BASE = os.getenv("ZOHO_API_BASE")
 
@@ -52,9 +53,9 @@ def refresh_access_token():
 
     # Check if the access token has expired
     if not access_token or (access_token_expiration and time.time() > access_token_expiration):
-        st.write("🔄 Refreshing access token...")
+        st.write(f"🔄 Refreshing access token...")
 
-        url = f"{ZOHO_API_BASE}/oauth/v2/token"
+        url = f"{ZOHO_BASE}/oauth/v2/token"
         data = {
             "refresh_token": ZOHO_REFRESH_TOKEN,
             "client_id": ZOHO_CLIENT_ID,
@@ -87,6 +88,7 @@ def refresh_access_token():
 
 # Function to fetch Zoho CRM modules
 def get_modules(access_token):
+    st.write(access_token)
     url = f"{ZOHO_API_BASE}/crm/v2/settings/modules"
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
     response = requests.get(url, headers=headers)
