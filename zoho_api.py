@@ -19,7 +19,7 @@ ZOHO_API_BASE = os.getenv("ZOHO_API_BASE")
 
 # File paths
 TOKEN_TIMESTAMP_FILE = "refresh_token_timestamp.txt"
-DATA_FILE = "zoho_modules.json"  # File to store fetched modules
+DATA_FILE = "zoho_accounts.json"  # File to store fetched account data
 
 # Access token and expiration handling
 access_token = None
@@ -30,6 +30,7 @@ def update_refresh_token_timestamp():
         file.write(str(time.time()))
 
 def refresh_access_token():
+    """Refresh Zoho API access token."""
     global access_token, access_token_expiration
 
     if not access_token or (access_token_expiration and time.time() > access_token_expiration):
@@ -61,25 +62,26 @@ def refresh_access_token():
             st.error(f"❌ Invalid JSON response when refreshing token: {response.text}")
             return None
 
-def get_modules(access_token):
-    url = f"{ZOHO_API_BASE}/crm/v2/settings/modules"
+def get_accounts(access_token):
+    """Fetch account data from Zoho CRM."""
+    url = f"{ZOHO_API_BASE}/crm/v2/Accounts"
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
     response = requests.get(url, headers=headers)
 
     if response.status_code != 200:
-        st.error(f"❌ Failed to fetch modules: {response.status_code} {response.text}")
+        st.error(f"❌ Failed to fetch accounts: {response.status_code} {response.text}")
         return []
 
     try:
-        modules = response.json().get("modules", [])
-        save_data_to_json(modules)  # Save data locally
-        return modules
+        accounts = response.json().get("data", [])
+        save_data_to_json(accounts)  # Save locally
+        return accounts
     except json.JSONDecodeError:
-        st.error("❌ Invalid JSON response when fetching modules")
+        st.error("❌ Invalid JSON response when fetching accounts")
         return []
 
 def save_data_to_json(data):
-    """Save the fetched Zoho CRM modules data to a local JSON file."""
+    """Save the fetched account data to a local JSON file."""
     try:
         with open(DATA_FILE, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)
@@ -87,31 +89,39 @@ def save_data_to_json(data):
     except Exception as e:
         st.error(f"❌ Failed to save data: {str(e)}")
 
+def display_accounts_table(accounts):
+    """Display account names, processors, and merchant numbers in a table."""
+    if not accounts:
+        st.write("❌ No account data available.")
+        return
+
+    table_data = []
+    for account in accounts:
+        account_name = account.get("Account_Name", "N/A")
+        processor = account.get("Processor", "N/A")  # Change to actual field name
+        merchant_number = account.get("Merchant_Number", "N/A")  # Change to actual field name
+
+        table_data.append({
+            "Account Name": account_name,
+            "Processor": processor,
+            "Merchant Number": merchant_number
+        })
+
+    # Convert list to a Pandas DataFrame
+    df = pd.DataFrame(table_data)
+
+    # Display as a table in Streamlit
+    st.write("## Account Details")
+    st.dataframe(df)  # Use st.table(df) for a static table
+
 # Streamlit UI
-st.title("Zoho CRM Modules")
-st.write("Click the button below to fetch and save Zoho CRM modules.")
+st.title("Zoho CRM Accounts")
+st.write("Click the button below to fetch and display account details.")
 
-if st.button("Fetch and Save Modules"):
-    st.write("🔄 Fetching modules...")
+if st.button("Fetch and Show Accounts"):
+    st.write("🔄 Fetching accounts...")
     access_token = refresh_access_token()
-    
+
     if access_token:
-        modules = get_modules(access_token)
-
-        if modules:
-            # Create a table data structure
-            table_data = []
-            
-            for index, module in enumerate(modules, start=1):  # Start counting from 1
-                table_data.append({"S.No": index, "Module Name": module.get("api_name", "N/A")})
-
-            # Convert list to a Pandas DataFrame
-            df = pd.DataFrame(table_data)
-
-            # Display as a table in Streamlit with proper indexing
-            st.write("## Zoho CRM Modules Table")
-            st.dataframe(df.set_index("S.No"))  # Set "S.No" as the index to remove extra numbers
-
-        else:
-            st.write("❌ No modules found.")
-
+        accounts = get_accounts(access_token)
+        display_accounts_table(accounts)
