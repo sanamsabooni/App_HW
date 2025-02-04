@@ -16,7 +16,7 @@ ZOHO_BASE = os.getenv("ZOHO_BASE")
 ZOHO_REDIRECT_URI = os.getenv("ZOHO_REDIRECT_URI")
 ZOHO_API_BASE = os.getenv("ZOHO_API_BASE")
 
-# File to store the last refresh token usage time
+# File paths
 TOKEN_TIMESTAMP_FILE = "refresh_token_timestamp.txt"
 DATA_FILE = "zoho_modules.json"  # File to store fetched modules
 
