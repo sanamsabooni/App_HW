@@ -98,30 +98,37 @@ def display_accounts_table(accounts):
     table_data = []
     for account in accounts:
         account_name = account.get("Account_Name", "N/A")
-        processor = account.get("Processor", "N/A")  # Change to actual field name
-        merchant_number = account.get("Merchant_Number", "N/A")  # Change to actual field name
+        processor = account.get("Processor", "N/A")  # Ensure this field name matches Zoho CRM
+        merchant_number = account.get("Merchant_Number", "N/A")  # Ensure correct field name
 
-        table_data.append({
-            "Account Name": account_name,
-            "Processor": processor,
-            "Merchant Number": merchant_number
-        })
+        # ✅ Fix: Check if processor is not None before using .lower()
+        if processor and isinstance(processor, str) and processor.lower() == "fiserv":
+            table_data.append({
+                "Account Name": account_name,
+                "Processor": processor,
+                "Merchant Number": merchant_number
+            })
+
+    if not table_data:
+        st.write("❌ No accounts found with Processor = Fiserv")
+        return
 
     # Convert list to a Pandas DataFrame
     df = pd.DataFrame(table_data)
 
     # Display as a table in Streamlit
-    st.write("## Account Details")
+    st.write("## Fiserv Accounts")
     st.dataframe(df)  # Use st.table(df) for a static table
 
 # Streamlit UI
 st.title("Zoho CRM Accounts")
-st.write("Click the button below to fetch and display account details.")
+st.write("Click the button below to fetch and display accounts with Processor = Fiserv.")
 
-if st.button("Fetch and Show Accounts"):
+if st.button("Fetch and Show Fiserv Accounts"):
     st.write("🔄 Fetching accounts...")
     access_token = refresh_access_token()
 
     if access_token:
         accounts = get_accounts(access_token)
         display_accounts_table(accounts)
+
