@@ -4,6 +4,10 @@ import json
 import time
 import streamlit as st
 from dotenv import load_dotenv
+import requests
+from requests.auth import HTTPBasicAuth
+import pandas as pd
+
 
 # Load environment variables
 load_dotenv(override=True)
@@ -65,6 +69,11 @@ def get_modules(access_token):
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
     response = requests.get(url, headers=headers)
 
+    if response.status_code == 401:    
+        response = requests.get('http://your_url', auth=HTTPBasicAuth('user', 'pass'))
+
+
+
     if response.status_code != 200:
         st.error(f"❌ Failed to fetch modules: {response.status_code} {response.text}")
         return []
@@ -97,8 +106,20 @@ if st.button("Fetch and Save Modules"):
     if access_token:
         modules = get_modules(access_token)
         if modules:
-            st.write("## Module Names:")
-            for module in modules:
-                st.write(f"✅ {module.get('api_name')}")
+            # Create a table data structure
+            table_data = []
+            
+            for index, module in enumerate(modules, start=1):  # Start counting from 1
+                table_data.append({"S.No": index, "Module Name": module.get("api_name", "N/A")})
+
+            # Convert list to a Pandas DataFrame
+            df = pd.DataFrame(table_data)
+
+            # Display as a table in Streamlit
+            st.write("## Zoho CRM Modules Table")
+            st.dataframe(df)  # Display table with scroll and sorting
+
         else:
             st.write("❌ No modules found.")
+
+
