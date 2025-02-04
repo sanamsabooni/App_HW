@@ -1,0 +1,4369 @@
+[
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Feeds",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Feeds",
+        "triggers_supported": false,
+        "id": "525504000007868001",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Feeds",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 1,
+        "singular_label": "Feeds",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "Feeds",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Feeds",
+        "profile_count": 23,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2025-01-30T07:30:35-08:00",
+        "plural_label": "Invoices",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Invoices",
+        "triggers_supported": false,
+        "id": "525504000077920803",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Invoice",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 1,
+        "singular_label": "Invoice",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "CustomModule5001",
+        "quick_create": true,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule5001",
+        "profile_count": 11,
+        "business_card_field_limit": 5,
+        "parent_module": {
+            "api_name": "Zoho_Books",
+            "id": "525504000077929435"
+        }
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "SalesInbox",
+        "presence_sub_menu": false,
+        "actual_plural_label": "SalesInbox",
+        "triggers_supported": false,
+        "id": "525504000018145001",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "SalesInbox",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 2,
+        "singular_label": "SalesInbox",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "SalesInbox",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "SalesInbox",
+        "profile_count": 22,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Home",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Home",
+        "triggers_supported": false,
+        "id": "525504000000002173",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Home",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 3,
+        "singular_label": "Home",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "Home",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Home",
+        "profile_count": 23,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2025-02-03T11:50:12-08:00",
+        "plural_label": "Accounts",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Accounts",
+        "triggers_supported": true,
+        "id": "525504000000002177",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Account",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 5,
+        "singular_label": "Account",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Accounts",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Accounts",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": true,
+        "modified_time": "2025-01-31T07:59:35-08:00",
+        "plural_label": "Orders",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Orders",
+        "triggers_supported": true,
+        "id": "525504000000002221",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": true,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Orders",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 6,
+        "singular_label": "Orders",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Sales_Orders",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "SalesOrders",
+        "profile_count": 17,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": true,
+        "modified_time": "2024-02-29T12:11:25-08:00",
+        "plural_label": "Invoices",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Invoices",
+        "triggers_supported": true,
+        "id": "525504000000002225",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Invoice",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 7,
+        "singular_label": "Invoice",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Invoices",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Salpi Ohanessian",
+            "id": "525504000007809073"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Invoices",
+        "profile_count": 16,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2025-01-23T11:05:05-08:00",
+        "plural_label": "Cancellations",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Cancellations",
+        "triggers_supported": true,
+        "id": "525504000005752935",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Cancellations",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 8,
+        "singular_label": "Cancellations",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Cancellations",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "custom",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule2",
+        "profile_count": 16,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2025-01-22T16:10:40-08:00",
+        "plural_label": "ACH Reject",
+        "presence_sub_menu": true,
+        "actual_plural_label": "ACH Reject",
+        "triggers_supported": true,
+        "id": "525504000005832557",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "ACH Reject",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 9,
+        "singular_label": "ACH Reject",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "ACH_Reject",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "custom",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule3",
+        "profile_count": 16,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2025-01-28T12:29:56-08:00",
+        "plural_label": "Cases",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Cases",
+        "triggers_supported": true,
+        "id": "525504000000002209",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Case",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 10,
+        "singular_label": "Case",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Cases",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": false,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Cases",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2025-01-22T16:10:40-08:00",
+        "plural_label": "Account Analysis",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Account Analysis",
+        "triggers_supported": true,
+        "id": "525504000005894240",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Account Analysis",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 11,
+        "singular_label": "Account Analysis",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Account_Analysis",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "custom",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule4",
+        "profile_count": 17,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2023-09-02T03:43:04-07:00",
+        "plural_label": "Tin Invalid",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Tin Invalid",
+        "triggers_supported": true,
+        "id": "525504000005832158",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Tin Invalid",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 12,
+        "singular_label": "Tin Invalid",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Tin_Invalid",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule1",
+        "profile_count": 11,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Reports",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Reports",
+        "triggers_supported": false,
+        "id": "525504000000002185",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Report",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 13,
+        "singular_label": "Report",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "Reports",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Reports",
+        "profile_count": 11,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2024-11-22T08:58:28-08:00",
+        "plural_label": "Products",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Products",
+        "triggers_supported": true,
+        "id": "525504000000002213",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Product",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 14,
+        "singular_label": "Product",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Products",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Salpi Ohanessian",
+            "id": "525504000007809073"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Products",
+        "profile_count": 17,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2023-09-13T04:49:58-07:00",
+        "plural_label": "Notes",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Notes",
+        "triggers_supported": false,
+        "id": "525504000000002197",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Note",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": false,
+        "web_link": null,
+        "sequence_number": 15,
+        "singular_label": "Note",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Notes",
+        "quick_create": false,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Notes",
+        "profile_count": 23,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Documents",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Documents",
+        "triggers_supported": false,
+        "id": "525504000002936001",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Documents",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 15,
+        "singular_label": "Documents",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "Documents",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Documents",
+        "profile_count": 21,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Solutions",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Solutions",
+        "triggers_supported": true,
+        "id": "525504000000002211",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Solution",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 16,
+        "singular_label": "Solution",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Solutions",
+        "quick_create": true,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Solutions",
+        "profile_count": 13,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": true,
+        "modified_time": "2020-09-18T11:58:28-07:00",
+        "plural_label": "Purchase Orders",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Purchase Orders",
+        "triggers_supported": true,
+        "id": "525504000000002223",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Purchase Order",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 18,
+        "singular_label": "Purchase Order",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Purchase_Orders",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Salpi Ohanessian",
+            "id": "525504000007809073"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "PurchaseOrders",
+        "profile_count": 14,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2024-02-06T09:03:18-08:00",
+        "plural_label": "Leads",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Leads",
+        "triggers_supported": true,
+        "id": "525504000000002175",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Lead",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 19,
+        "singular_label": "Lead",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Leads",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Edna Eisavi",
+            "id": "525504000000059029"
+        },
+        "generated_type": "default",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Leads",
+        "profile_count": 19,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": "2024-08-16T09:22:13-07:00",
+        "plural_label": "Collections",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Collections",
+        "triggers_supported": true,
+        "id": "525504000008251239",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Collection",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 20,
+        "singular_label": "Collection",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Collections",
+        "quick_create": false,
+        "modified_by": {
+            "name": "Salpi Ohanessian",
+            "id": "525504000007809073"
+        },
+        "generated_type": "custom",
+        "feeds_required": true,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule5",
+        "profile_count": 14,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": "2019-08-28T10:38:28-07:00",
+        "plural_label": "Status History",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Status History",
+        "triggers_supported": false,
+        "id": "525504000048770010",
+        "isBlueprintSupported": false,
+        "visibility": 2,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Status History",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": false,
+        "web_link": null,
+        "sequence_number": 24,
+        "singular_label": "Status History",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Status_History",
+        "quick_create": false,
+        "modified_by": {
+            "name": "April Vegtel",
+            "id": "525504000009369076"
+        },
+        "generated_type": "picklisttracker",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "LinkingModule1",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {
+            "api_name": "Cases",
+            "id": "525504000000002209"
+        }
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2019-11-12T16:39:03-08:00",
+        "plural_label": "Clicksend SMS",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Clicksend SMS",
+        "triggers_supported": true,
+        "id": "525504000052007007",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Clicksend SMS",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 24,
+        "singular_label": "Clicksend SMS",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "clicksendext__Clicksend_SMS",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule6",
+        "profile_count": 8,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2020-09-18T11:58:25-07:00",
+        "plural_label": "ZohoSign Documents",
+        "presence_sub_menu": true,
+        "actual_plural_label": "ZohoSign Documents",
+        "triggers_supported": true,
+        "id": "525504000068850007",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "ZohoSign Documents",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "ZohoSign Documents",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "zohosign__ZohoSign_Documents",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule7",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2020-09-18T11:58:21-07:00",
+        "plural_label": "ZohoSign Recipients",
+        "presence_sub_menu": true,
+        "actual_plural_label": "ZohoSign Recipients",
+        "triggers_supported": true,
+        "id": "525504000068850932",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "ZohoSign Recipients",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "ZohoSign Recipients",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "zohosign__ZohoSign_Recipients",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule8",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2020-09-18T11:58:22-07:00",
+        "plural_label": "ZohoSign Document Events",
+        "presence_sub_menu": true,
+        "actual_plural_label": "ZohoSign Document Events",
+        "triggers_supported": true,
+        "id": "525504000068851857",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "ZohoSign Document Events",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "ZohoSign Document Events",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "zohosign__ZohoSign_Document_Events",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule9",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2021-04-07T13:38:55-07:00",
+        "plural_label": "Envelopes",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Envelopes",
+        "triggers_supported": true,
+        "id": "525504000083905007",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Envelopes",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "Envelopes",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "docusign1__Envelopes",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule10",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2021-04-07T13:38:52-07:00",
+        "plural_label": "Envelope Recipients",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Envelope Recipients",
+        "triggers_supported": true,
+        "id": "525504000083905991",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Envelope Recipients",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "Envelope Recipients",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "docusign1__Envelope_Recipients",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule11",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2021-04-07T13:38:53-07:00",
+        "plural_label": "Envelope Events",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Envelope Events",
+        "triggers_supported": true,
+        "id": "525504000083906975",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Envelope Events",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "Envelope Events",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "docusign1__Envelope_Events",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule12",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2023-09-02T03:43:05-07:00",
+        "plural_label": "SMS History",
+        "presence_sub_menu": true,
+        "actual_plural_label": "SMS History",
+        "triggers_supported": true,
+        "id": "525504000089350009",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "SMS History",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "SMS History",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "smsmagic4__SMS_History",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule14",
+        "profile_count": 19,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2021-06-13T23:40:30-07:00",
+        "plural_label": "SMS Template",
+        "presence_sub_menu": true,
+        "actual_plural_label": "SMS Template",
+        "triggers_supported": true,
+        "id": "525504000089350995",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "SMS Template",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "SMS Template",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "smsmagic4__SMS_Template",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule15",
+        "profile_count": 18,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2021-06-13T23:40:31-07:00",
+        "plural_label": "SMS SenderId",
+        "presence_sub_menu": true,
+        "actual_plural_label": "SMS SenderId",
+        "triggers_supported": true,
+        "id": "525504000089351979",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "SMS SenderId",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 25,
+        "singular_label": "SMS SenderId",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "smsmagic4__SMS_SenderId",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "custom",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "CustomModule16",
+        "profile_count": 19,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Attachments",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Attachments",
+        "triggers_supported": false,
+        "id": "525504000000002227",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Attachment",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": false,
+        "web_link": null,
+        "sequence_number": 29,
+        "singular_label": "Attachment",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Attachments",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Attachments",
+        "profile_count": 19,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2024-01-12T13:10:57-08:00",
+        "plural_label": "Contacts",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Contacts",
+        "triggers_supported": true,
+        "id": "525504000000002179",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Contact",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 32,
+        "singular_label": "Contact",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Contacts",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": true,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Contacts",
+        "profile_count": 17,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": "2024-01-12T13:10:57-08:00",
+        "plural_label": "Potentials",
+        "presence_sub_menu": true,
+        "actual_plural_label": "Potentials",
+        "triggers_supported": true,
+        "id": "525504000000002181",
+        "isBlueprintSupported": true,
+        "visibility": 1,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": true,
+        "actual_singular_label": "Potential",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 33,
+        "singular_label": "Potential",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Deals",
+        "quick_create": false,
+        "modified_by": {
+            "name": "Admin .",
+            "id": "525504000000059031"
+        },
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": true,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Deals",
+        "profile_count": 11,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Actions Performed",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Actions Performed",
+        "triggers_supported": false,
+        "id": "525504000024179005",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Actions Performed",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Standard",
+                "id": "525504000000026014"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Sales lead - Delete",
+                "id": "525504000005951085"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Everscale Admin - Delete",
+                "id": "525504000095245929"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Outside Agent",
+                "id": "525504000171462001"
+            },
+            {
+                "name": "Outside Agent / Manager",
+                "id": "525504000174264001"
+            },
+            {
+                "name": "Outside Agent / Leads",
+                "id": "525504000182168141"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            },
+            {
+                "name": "Outside Agent / Sup",
+                "id": "525504000198194258"
+            }
+        ],
+        "filter_supported": false,
+        "show_as_tab": false,
+        "web_link": null,
+        "sequence_number": 42,
+        "singular_label": "Actions Performed",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Actions_Performed",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Actions Performed",
+        "profile_count": 23,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Zoho Finance",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Zoho Finance",
+        "triggers_supported": false,
+        "id": "525504000077929435",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Zoho Finance",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": null,
+        "sequence_number": 73,
+        "singular_label": "Zoho Finance",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "Zoho_Books",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "default",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "Zoho Books",
+        "profile_count": 11,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": false,
+        "deletable": false,
+        "description": null,
+        "creatable": false,
+        "inventory_template_supported": false,
+        "modified_time": null,
+        "plural_label": "Converse Desk",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Converse Desk",
+        "triggers_supported": false,
+        "id": "525504000097350957",
+        "isBlueprintSupported": false,
+        "visibility": 1,
+        "convertable": false,
+        "editable": false,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Converse Desk",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "CSR - Delete",
+                "id": "525504000000095013"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Leads Admin - Delete",
+                "id": "525504000066419055"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": true,
+        "web_link": "https://app.sms-magic.com/app/#/converse-desk?userId=${Users.User Id}&state=${SMSMagic.User Token}",
+        "sequence_number": 125,
+        "singular_label": "Converse Desk",
+        "viewable": true,
+        "api_supported": false,
+        "api_name": "Converse_Desk",
+        "quick_create": false,
+        "modified_by": null,
+        "generated_type": "web",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "WebTab1",
+        "profile_count": 12,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": true,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2022-04-13T15:26:35-07:00",
+        "plural_label": "Contacts X Accounts",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Contacts X Accounts",
+        "triggers_supported": false,
+        "id": "525504000118769251",
+        "isBlueprintSupported": false,
+        "visibility": 2,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Contacts X Accounts",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": false,
+        "web_link": null,
+        "sequence_number": 127,
+        "singular_label": "Contacts X Accounts",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Contacts_X_Accounts",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Salpi Ohanessian",
+            "id": "525504000007809073"
+        },
+        "generated_type": "linking",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "LinkingModule2",
+        "profile_count": 13,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    },
+    {
+        "has_more_profiles": false,
+        "access_type": "org_based",
+        "global_search_supported": true,
+        "deletable": true,
+        "description": null,
+        "creatable": true,
+        "inventory_template_supported": false,
+        "modified_time": "2022-09-13T08:25:54-07:00",
+        "plural_label": "Contacts X Accounts2",
+        "presence_sub_menu": false,
+        "actual_plural_label": "Contacts X Accounts2",
+        "triggers_supported": false,
+        "id": "525504000135384032",
+        "isBlueprintSupported": false,
+        "visibility": 2,
+        "convertable": false,
+        "editable": true,
+        "emailTemplate_support": false,
+        "actual_singular_label": "Contacts X Accounts2",
+        "profiles": [
+            {
+                "name": "Administrator",
+                "id": "525504000000026011"
+            },
+            {
+                "name": "Tech / POS",
+                "id": "525504000000095015"
+            },
+            {
+                "name": "Sales",
+                "id": "525504000000095017"
+            },
+            {
+                "name": "Agent Relations / Data Entry",
+                "id": "525504000000246064"
+            },
+            {
+                "name": "Managers - Delete",
+                "id": "525504000003495127"
+            },
+            {
+                "name": "POS - Delete",
+                "id": "525504000005799268"
+            },
+            {
+                "name": "Agent Relations - Delete",
+                "id": "525504000005799328"
+            },
+            {
+                "name": "Tech/Sales",
+                "id": "525504000014346043"
+            },
+            {
+                "name": "Customer Service / Data Entry",
+                "id": "525504000030812006"
+            },
+            {
+                "name": "Administrator 2 - Delete",
+                "id": "525504000055489148"
+            },
+            {
+                "name": "Admin Restricted",
+                "id": "525504000068900001"
+            },
+            {
+                "name": "Administrator 3 - Delete",
+                "id": "525504000086512012"
+            },
+            {
+                "name": "Adminstrator 4 - Delete",
+                "id": "525504000145191045"
+            },
+            {
+                "name": "Controller",
+                "id": "525504000192175088"
+            }
+        ],
+        "filter_supported": true,
+        "show_as_tab": false,
+        "web_link": null,
+        "sequence_number": 135,
+        "singular_label": "Contacts X Accounts2",
+        "viewable": true,
+        "api_supported": true,
+        "api_name": "Contacts_X_Accounts2",
+        "quick_create": true,
+        "modified_by": {
+            "name": "Salpi Ohanessian",
+            "id": "525504000007809073"
+        },
+        "generated_type": "linking",
+        "feeds_required": false,
+        "scoring_supported": false,
+        "webform_supported": false,
+        "public_fields_configured": false,
+        "arguments": [],
+        "module_name": "LinkingModule3",
+        "profile_count": 14,
+        "business_card_field_limit": 5,
+        "parent_module": {}
+    }
+]
