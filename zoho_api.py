@@ -131,4 +131,3 @@ if st.button("Fetch and Show TSYS Accounts"):
     if access_token:
         accounts = get_accounts(access_token)
         display_accounts_table(accounts)
-
