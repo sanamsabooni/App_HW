@@ -1,36 +1,31 @@
 import pandas as pd
 from database import get_db_connection
+import psycopg2
+from database import get_db_connection
 
-def save_contacts_to_db(contacts):
-    """Save Zoho CRM contacts to PostgreSQL."""
+def save_accounts_to_db(accounts_data):
+    """Inserts or updates accounts data into PostgreSQL."""
     conn, tunnel = get_db_connection()
     if not conn:
-        print("❌ Database connection failed.")
         return
 
-    try:
-        cursor = conn.cursor()
+    cur = conn.cursor()
+    insert_query = """
+    INSERT INTO zoho_accounts (account_id, layout, pci_fee, pci_amnt, split_percentage)
+    VALUES (%s, %s, %s, %s, %s)
+    ON CONFLICT (account_id) DO UPDATE
+    SET pci_fee = EXCLUDED.pci_fee,
+        pci_amnt = EXCLUDED.pci_amnt,
+        split_percentage = EXCLUDED.split_percentage;
+    """
 
-        for contact in contacts:
-            zoho_id = contact.get("id", "")
-            full_name = contact.get("Full_Name", "N/A")
-            email = contact.get("Email", "N/A")
+    cur.executemany(insert_query, accounts_data)
+    conn.commit()
+    cur.close()
+    conn.close()
+    tunnel.stop()
+    print("✅ Data successfully inserted into PostgreSQL.")
 
-            cursor.execute("""
-                INSERT INTO zoho_contacts (zoho_id, full_name, email)
-                VALUES (%s, %s, %s)
-                ON CONFLICT (zoho_id) DO UPDATE SET
-                full_name = EXCLUDED.full_name,
-                email = EXCLUDED.email;
-            """, (zoho_id, full_name, email))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
-        tunnel.stop()
-        print("✅ Contacts saved to PostgreSQL successfully!")
-    except Exception as e:
-        print(f"❌ Database error: {str(e)}")
 
 def get_all_contacts():
     """Retrieve all contacts from PostgreSQL."""
