@@ -63,7 +63,27 @@ def get_accounts():
 
     return all_accounts
 
+def get_contacts():
+    """Fetch all contacts from Zoho CRM."""
+    access_token = refresh_access_token()
+    if not access_token:
+        print("❌ Failed to get access token.")
+        return []
+
+    url = f"{ZOHO_API_BASE}/crm/v2/Contacts"
+    headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"❌ Failed to fetch contacts: {response.status_code} {response.text}")
+        return []
+
+    data = response.json()
+    return data.get("data", [])
+
+
 if __name__ == "__main__":
     accounts_data = get_accounts()
     if accounts_data:
         save_accounts_to_db(accounts_data)
+

@@ -1,30 +1,63 @@
 import streamlit as st
 import pandas as pd
-from utils.db_utils import get_all_contacts
-from zoho_api import get_contacts  
+import psycopg2
+from dotenv import load_dotenv
+import os
 
-st.title("Zoho CRM Contacts 📋")
+# Load environment variables
+load_dotenv()
 
-if st.button("🔄 Fetch and Show Agents"):
-    st.write("⏳ Fetching contacts from Zoho CRM...")
-    contacts = get_contacts()
-    if contacts:
-        st.success(f"✅ {len(contacts)} contacts fetched and saved!")
-    else:
-        st.error("❌ No contacts found or API failed.")
+# PostgreSQL connection details
+DB_HOST = os.getenv("RDS_HOST")
+DB_NAME = os.getenv("RDS_DB")
+DB_USER = os.getenv("RDS_USER")
+DB_PASSWORD = os.getenv("RDS_PASSWORD")
 
-contacts = get_all_contacts()
-if contacts.empty:
-    st.warning("No data found in the database.")
+# Function to connect to the database
+def get_db_connection():
+    """Connect to PostgreSQL and return a connection object."""
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        return conn
+    except Exception as e:
+        st.error(f"❌ Database connection error: {e}")
+        return None
+
+# Fetch table data
+def fetch_zoho_accounts():
+    """Fetches the Zoho Accounts table from PostgreSQL."""
+    conn = get_db_connection()
+    if not conn:
+        return None
+
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM zoho_accounts")
+    rows = cur.fetchall()
+    columns = ["Account ID", "Layout", "PCI Fee", "PCI Amount", "Split Percentage"]
+    cur.close()
+    conn.close()
+
+    return pd.DataFrame(rows, columns=columns)
+
+# Streamlit UI
+st.title("📊 Zoho Accounts Data Viewer")
+
+# Fetch and display data
+df = fetch_zoho_accounts()
+if df is not None and not df.empty:
+    st.dataframe(df, use_container_width=True)
 else:
-    per_page = 20  
-    total_pages = (len(contacts) // per_page) + (1 if len(contacts) % per_page > 0 else 0)
+    st.warning("No data found in `zoho_accounts` table.")
 
-    page_number = st.number_input("Page Number", min_value=1, max_value=total_pages, value=1, step=1)
-    start_idx = (page_number - 1) * per_page
-    end_idx = start_idx + per_page
-
-    df_paginated = contacts.iloc[start_idx:end_idx]
-    st.dataframe(df_paginated.set_index("S.No"))
-
-    st.write(f"📄 Showing page {page_number} of {total_pages}")
+# Refresh Button
+if st.button("🔄 Refresh Data"):
+    df = fetch_zoho_accounts()
+    if df is not None and not df.empty:
+        st.dataframe(df, use_container_width=True)
+    else:
+        st.warning("No data found in `zoho_accounts` table.")
