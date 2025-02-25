@@ -19,3 +19,9 @@ DB_CONFIG = {
     "user": os.getenv("RDS_USER"),
     "password": os.getenv("RDS_PASSWORD"),
 }
+
+DB_HOST = "zohocrmdb.c3my8om88l56.us-east-2.rds.amazonaws.com"
+DB_NAME = "RDS_DB"
+DB_USER = "RDS_USER"
+DB_PASSWORD = "RDS_PASSWORD"
+DB_PORT = "RDS_PORT"
