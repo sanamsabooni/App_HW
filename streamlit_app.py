@@ -6,14 +6,15 @@ def fetch_paginated_data(page=1, per_page=200):
     """Fetch paginated data from the database."""
     conn = get_db_connection()
     if not conn:
+        st.error("Database connection failed!")
         return None
 
     cur = conn.cursor()
     offset = (page - 1) * per_page
     query = """
-        SELECT account_id, pci_fee, pci_amnt, split 
-        FROM zoho_accounts
-        ORDER BY account_id
+        SELECT partner_name, office_code, office_code_2, split, pci_fee, sales_id, pci_amnt, account_name, outside_agent
+        FROM accounts
+        ORDER BY sales_id
         LIMIT %s OFFSET %s
     """
     cur.execute(query, (per_page, offset))
@@ -21,7 +22,7 @@ def fetch_paginated_data(page=1, per_page=200):
     cur.close()
     conn.close()
 
-    columns = ["Account ID", "PCI Fee ($)", "PCI Amount ($)", "Split (%)"]
+    columns = ["Partner Name", "Office Code", "Office Code 2", "Split", "PCI Fee", "Sales ID", "PCI Amount", "Account Name", "Outside Agent"]
     return pd.DataFrame(rows, columns=columns) if rows else None
 
 # Streamlit UI for pagination
@@ -34,6 +35,6 @@ per_page = 200
 # Fetch and display data
 data = fetch_paginated_data(page=page, per_page=per_page)
 if data is not None and not data.empty:
-    st.table(data)
+    st.dataframe(data)
 else:
     st.warning("No data found.")
