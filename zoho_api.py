@@ -1,45 +1,99 @@
 import os
+import psycopg2
 import requests
-import time
 from dotenv import load_dotenv
-from utils.zoho_utils import refresh_access_token
-from utils.db_utils import save_contacts_to_db
 
 # Load environment variables
 load_dotenv()
 
-ZOHO_API_BASE = os.getenv("ZOHO_API_BASE")
+# Zoho API Credentials
+ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID")
+ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET")
+ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN")
+ZOHO_API_URL = "https://www.zohoapis.com/crm/v2/Accounts"
 
-def get_contacts():
-    """Fetch all contacts from Zoho CRM with pagination."""
-    access_token = refresh_access_token()
+# PostgreSQL connection details
+DB_HOST = os.getenv("RDS_HOST")
+DB_NAME = os.getenv("RDS_DB")
+DB_USER = os.getenv("RDS_USER")
+DB_PASSWORD = os.getenv("RDS_PASSWORD")
+
+def get_access_token():
+    """Refreshes the Zoho access token."""
+    url = "https://accounts.zoho.com/oauth/v2/token"
+    payload = {
+        "refresh_token": ZOHO_REFRESH_TOKEN,
+        "client_id": ZOHO_CLIENT_ID,
+        "client_secret": ZOHO_CLIENT_SECRET,
+        "grant_type": "refresh_token"
+    }
+    
+    response = requests.post(url, data=payload)
+    data = response.json()
+
+    if "access_token" in data:
+        return data["access_token"]
+    else:
+        print(f"❌ Failed to refresh token: {data}")
+        return None
+
+def get_db_connection():
+    """Establishes connection to the PostgreSQL database."""
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        return conn
+    except Exception as e:
+        print(f"❌ Database connection error: {e}")
+        return None
+
+def fetch_zoho_data():
+    """Fetches PCI Fee, PCI Amount, and Split from Zoho CRM and saves it to PostgreSQL."""
+    access_token = get_access_token()
     if not access_token:
-        print("❌ Failed to get access token.")
-        return []
+        print("❌ No valid access token. Exiting.")
+        return
 
-    all_contacts = []
-    page = 1
-    more_records = True
+    headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
+    response = requests.get(ZOHO_API_URL, headers=headers)
 
-    while more_records:
-        url = f"{ZOHO_API_BASE}/crm/v2/Contacts?page={page}&per_page=200"
-        headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
-        response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json().get("data", [])
+        save_to_database(data)
+    else:
+        print(f"❌ Failed to fetch data from Zoho CRM: {response.text}")
 
-        if response.status_code != 200:
-            print(f"❌ Failed to fetch contacts: {response.status_code} {response.text}")
-            return []
+def save_to_database(data):
+    """Saves fetched Zoho CRM data to PostgreSQL."""
+    conn = get_db_connection()
+    if not conn:
+        return
 
-        data = response.json()
-        contacts = data.get("data", [])
-        all_contacts.extend(contacts)
+    cur = conn.cursor()
 
-        more_records = data.get("info", {}).get("more_records", False)
-        page += 1
+    for record in data:
+        account_id = record.get("id")
+        pci_fee = record.get("PCI_Fee", 0.00)
+        pci_amnt = record.get("PCI_Amnt", 0.00)
+        split = record.get("Split", 0.00)
 
-    save_contacts_to_db(all_contacts)
-    return all_contacts
+        cur.execute("""
+            INSERT INTO zoho_accounts (account_id, pci_fee, pci_amnt, split)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (account_id) DO UPDATE 
+            SET pci_fee = EXCLUDED.pci_fee, 
+                pci_amnt = EXCLUDED.pci_amnt, 
+                split = EXCLUDED.split;
+        """, (account_id, pci_fee, pci_amnt, split))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    print("✅ Data successfully saved to the database.")
 
 if __name__ == "__main__":
-    contacts = get_contacts()
-    print(f"✅ {len(contacts)} contacts fetched and saved to the database.")
+    fetch_zoho_data()
