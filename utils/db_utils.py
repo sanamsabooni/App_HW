@@ -1,49 +1,34 @@
-import pandas as pd
-from database import get_db_connection
 import psycopg2
-from database import get_db_connection
+from config import DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
 
-def save_accounts_to_db(accounts_data):
-    """Inserts or updates accounts data into PostgreSQL."""
-    conn, tunnel = get_db_connection()
+def get_db_connection():
+    """Establishes a connection to the PostgreSQL database."""
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        return conn
+    except Exception as e:
+        print(f"❌ Database connection error: {e}")
+        return None
+
+def insert_zoho_record(record):
+    """Inserts a single record into the database."""
+    conn = get_db_connection()
     if not conn:
         return
-
-    cur = conn.cursor()
-    insert_query = """
-    INSERT INTO zoho_accounts (account_id, layout, pci_fee, pci_amnt, split_percentage)
-    VALUES (%s, %s, %s, %s, %s)
-    ON CONFLICT (account_id) DO UPDATE
-    SET pci_fee = EXCLUDED.pci_fee,
-        pci_amnt = EXCLUDED.pci_amnt,
-        split_percentage = EXCLUDED.split_percentage;
-    """
-
-    cur.executemany(insert_query, accounts_data)
+    
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO zoho_accounts (account_id, pci_fee, pci_amnt, split) 
+        VALUES (%s, %s, %s, %s) 
+        ON CONFLICT (account_id) DO UPDATE SET pci_fee = EXCLUDED.pci_fee, pci_amnt = EXCLUDED.pci_amnt, split = EXCLUDED.split
+    """, (record.get("id"), record.get("PCI_Fee"), record.get("PCI_Amount"), record.get("Split")))
+    
     conn.commit()
-    cur.close()
+    cursor.close()
     conn.close()
-    tunnel.stop()
-    print("✅ Data successfully inserted into PostgreSQL.")
-
-
-def get_all_contacts():
-    """Retrieve all contacts from PostgreSQL."""
-    conn, tunnel = get_db_connection()
-    if not conn:
-        return pd.DataFrame()  # Return an empty DataFrame if connection fails
-
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT zoho_id, full_name, email FROM zoho_contacts;")
-        rows = cursor.fetchall()
-        conn.close()
-        tunnel.stop()
-
-        # Convert the fetched data to a Pandas DataFrame
-        df = pd.DataFrame(rows, columns=["Zoho ID", "Agent Name", "Email"])
-        df.insert(0, "S.No", range(1, len(df) + 1))  # Add serial numbers
-        return df
-    except Exception as e:
-        print(f"❌ Database error: {str(e)}")
-        return pd.DataFrame()  # Return empty DataFrame on error
+    print("✅ Record inserted/updated successfully.")

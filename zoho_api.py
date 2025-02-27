@@ -19,7 +19,7 @@ DB_USER = os.getenv("RDS_USER")
 DB_PASSWORD = os.getenv("RDS_PASSWORD")
 
 def get_access_token():
-    """Refreshes the Zoho access token."""
+    """Refreshes the Zoho OAuth access token."""
     url = "https://accounts.zoho.com/oauth/v2/token"
     payload = {
         "refresh_token": ZOHO_REFRESH_TOKEN,
@@ -52,48 +52,74 @@ def get_db_connection():
         return None
 
 def fetch_zoho_data():
-    """Fetches PCI Fee, PCI Amount, and Split from Zoho CRM and saves it to PostgreSQL."""
+    """Fetches ALL paginated data from Zoho CRM and saves it to PostgreSQL."""
+    print("🚀 Fetching data from Zoho API...")
+
     access_token = get_access_token()
     if not access_token:
         print("❌ No valid access token. Exiting.")
         return
 
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
-    response = requests.get(ZOHO_API_URL, headers=headers)
+    all_data = []
+    page = 1
+    has_more_records = True
 
-    if response.status_code == 200:
-        data = response.json().get("data", [])
-        save_to_database(data)
-    else:
-        print(f"❌ Failed to fetch data from Zoho CRM: {response.text}")
+    while has_more_records:
+        url = f"{ZOHO_API_URL}?page={page}&per_page=200"
+        print(f"📡 Requesting: {url}")
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            records = data.get("data", [])
+            page_info = data.get("info", {})
+
+            print(f"📝 Page {page} Response Info: {page_info}")  # Print page details
+            print(f"✅ Page {page}: {len(records)} records fetched.")
+
+            if records:
+                all_data.extend(records)
+                page += 1  # Move to next page
+                has_more_records = page_info.get("more_records", False)  # Keep going if true
+
+            else:
+                print("✅ No more records found.")
+                has_more_records = False  # Stop fetching
+                break
+        else:
+            print(f"❌ API Request Failed: {response.text}")
+            break
+
+    print(f"📊 Total records fetched: {len(all_data)}")
+    save_to_database(all_data)
 
 def save_to_database(data):
-    """Saves fetched Zoho CRM data to PostgreSQL."""
+    """Saves retrieved data to PostgreSQL."""
+    if not data:
+        print("⚠️ No data to save.")
+        return
+    
     conn = get_db_connection()
     if not conn:
         return
-
-    cur = conn.cursor()
-
+    
+    cursor = conn.cursor()
+    
     for record in data:
-        account_id = record.get("id")
-        pci_fee = record.get("PCI_Fee", 0.00)
-        pci_amnt = record.get("PCI_Amnt", 0.00)
-        split = record.get("Split", 0.00)
-
-        cur.execute("""
-            INSERT INTO zoho_accounts (account_id, pci_fee, pci_amnt, split)
-            VALUES (%s, %s, %s, %s)
+        cursor.execute("""
+            INSERT INTO zoho_accounts (account_id, pci_fee, pci_amnt, split) 
+            VALUES (%s, %s, %s, %s) 
             ON CONFLICT (account_id) DO UPDATE 
-            SET pci_fee = EXCLUDED.pci_fee, 
-                pci_amnt = EXCLUDED.pci_amnt, 
-                split = EXCLUDED.split;
-        """, (account_id, pci_fee, pci_amnt, split))
+            SET pci_fee = EXCLUDED.pci_fee, pci_amnt = EXCLUDED.pci_amnt, split = EXCLUDED.split
+        """, (record.get("id"), record.get("PCI_Fee"), record.get("PCI_Amount"), record.get("Split")))
 
     conn.commit()
-    cur.close()
+    cursor.close()
     conn.close()
-    print("✅ Data successfully saved to the database.")
+    print(f"✅ Successfully saved {len(data)} records to the database.")
 
 if __name__ == "__main__":
+    print("🚀 Running zoho_api.py...")
     fetch_zoho_data()
