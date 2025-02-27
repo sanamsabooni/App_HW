@@ -38,7 +38,7 @@ def create_table():
         account_id VARCHAR(50) PRIMARY KEY,
         pci_fee NUMERIC(10,2),
         pci_amnt NUMERIC(10,2),
-        split NUMERIC(5,2)
+        split VARCHAR(50)
     );
     """
     cur.execute(create_table_query)
