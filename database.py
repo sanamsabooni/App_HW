@@ -1,51 +1,42 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
+from sshtunnel import SSHTunnelForwarder
 
 # Load environment variables
 load_dotenv()
 
-# ✅ Ensure the correct database connection details
-DB_HOST = os.getenv("RDS_HOST")  # Should be: zohocrmdb.cru0k6aaccv5.us-east-1.rds.amazonaws.com
-DB_NAME = os.getenv("RDS_DB")  # Should be: ZohoCrmDB
+SSH_HOST = os.getenv("SSH_HOST")
+SSH_PORT = int(os.getenv("SSH_PORT", 22))
+SSH_USER = os.getenv("SSH_USER")
+SSH_KEY_PATH = os.getenv("SSH_KEY_PATH")
+
+DB_HOST = os.getenv("RDS_HOST")
+DB_PORT = int(os.getenv("RDS_PORT", 5432))
+DB_NAME = os.getenv("RDS_DB")
 DB_USER = os.getenv("RDS_USER")
 DB_PASSWORD = os.getenv("RDS_PASSWORD")
 
 def get_db_connection():
-    """Establishes connection to the PostgreSQL database."""
+    """Establishes an SSH tunnel and connects to the PostgreSQL database."""
     try:
+        tunnel = SSHTunnelForwarder(
+            (SSH_HOST, SSH_PORT),
+            ssh_username=SSH_USER,
+            ssh_pkey=SSH_KEY_PATH,
+            remote_bind_address=(DB_HOST, DB_PORT)
+        )
+        tunnel.start()
+
         conn = psycopg2.connect(
-            host=DB_HOST,
+            host="127.0.0.1",
+            port=tunnel.local_bind_port,
             database=DB_NAME,
             user=DB_USER,
             password=DB_PASSWORD
         )
-        print("✅ Successfully connected to the database!")
-        return conn
+
+        return conn, tunnel
     except Exception as e:
-        print(f"❌ Database connection error: {e}")
-        return None
-
-def create_table():
-    """Creates the required table for Zoho CRM data if it does not exist."""
-    conn = get_db_connection()
-    if not conn:
-        return
-
-    cur = conn.cursor()
-    create_table_query = """
-    CREATE TABLE IF NOT EXISTS zoho_accounts (
-        account_id VARCHAR(50) PRIMARY KEY,
-        pci_fee NUMERIC(10,2),
-        pci_amnt NUMERIC(10,2),
-        split VARCHAR(50)
-    );
-    """
-    cur.execute(create_table_query)
-    conn.commit()
-    cur.close()
-    conn.close()
-    print("✅ Table `zoho_accounts` is set up correctly.")
-
-if __name__ == "__main__":
-    create_table()
+        print(f"❌ Database connection error: {str(e)}")
+        return None, None
