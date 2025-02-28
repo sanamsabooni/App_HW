@@ -26,12 +26,12 @@ def get_access_token():
     if "access_token" in data:
         return data["access_token"]
     else:
-        print(f"Error fetching access token: {data}")
+        print(f"❌ Error fetching access token: {data}")
         return None
 
 if __name__ == "__main__":
     token = get_access_token()
     if token:
-        print("Successfully retrieved Zoho access token.")
+        print("✅ Successfully retrieved Zoho access token.")
     else:
-        print("Failed to retrieve access token.")
+        print("❌ Failed to retrieve access token.")

@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from zoho_api import get_access_token  # Import authentication
 
+# Load environment variables
 load_dotenv()
 
 # Database connection details
@@ -49,28 +50,32 @@ def fetch_and_store_data():
                 account_name = account.get("Account_Name", None)
                 outside_agent = account.get("Outside_Agent", None)
 
-                insert_query = """
-                INSERT INTO accounts (partner_name, office_code, office_code_2, split, pci_fee, sales_id, pci_amnt, account_name, outside_agent)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (sales_id) DO UPDATE SET 
-                    partner_name = EXCLUDED.partner_name,
-                    office_code = EXCLUDED.office_code,
-                    office_code_2 = EXCLUDED.office_code_2,
-                    split = EXCLUDED.split,
-                    pci_fee = EXCLUDED.pci_fee,
-                    pci_amnt = EXCLUDED.pci_amnt,
-                    account_name = EXCLUDED.account_name,
-                    outside_agent = EXCLUDED.outside_agent;
-                """
+                # Insert into Agents table
+                if partner_name:
+                    cur.execute("""
+                        INSERT INTO agents (partner_name, office_code, office_code_2)
+                        VALUES (%s, %s, %s)
+                        ON CONFLICT (partner_name) DO NOTHING;
+                    """, (partner_name, office_code, office_code_2))
 
-                cur.execute(insert_query, (partner_name, office_code, office_code_2, split, pci_fee, sales_id, pci_amnt, account_name, outside_agent))
+                # Insert into Merchants table
+                cur.execute("""
+                    INSERT INTO merchants (account_name, sales_id, outside_agent, pci_fee, pci_amnt, split)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (sales_id) DO UPDATE SET 
+                        account_name = EXCLUDED.account_name,
+                        outside_agent = EXCLUDED.outside_agent,
+                        pci_fee = EXCLUDED.pci_fee,
+                        pci_amnt = EXCLUDED.pci_amnt,
+                        split = EXCLUDED.split;
+                """, (account_name, sales_id, outside_agent, pci_fee, pci_amnt, split))
 
             conn.commit()
-            print(f"Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
+            print(f"📢 Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
 
             page += 1  # Move to the next page
         else:
-            print(f"Error fetching page {page}: {response.text}")
+            print(f"❌ Error fetching page {page}: {response.text}")
             break
 
     cur.close()

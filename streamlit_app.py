@@ -2,39 +2,45 @@ import streamlit as st
 import pandas as pd
 from database import get_db_connection
 
-def fetch_paginated_data(page=1, per_page=200):
-    """Fetch paginated data from the database."""
+def fetch_merchant_data():
+    """Fetch joined merchant-agent data."""
     conn = get_db_connection()
     if not conn:
-        st.error("Database connection failed!")
+        st.error("❌ Database connection failed!")
         return None
 
     cur = conn.cursor()
-    offset = (page - 1) * per_page
     query = """
-        SELECT partner_name, office_code, office_code_2, split, pci_fee, sales_id, pci_amnt, account_name, outside_agent
-        FROM accounts
-        ORDER BY sales_id
-        LIMIT %s OFFSET %s
+        SELECT 
+            merchants.account_name,
+            merchants.sales_id,
+            merchants.pci_fee,
+            merchants.pci_amnt,
+            merchants.split,
+            COALESCE(agents.partner_name, 'No Agent') AS agent_name,
+            COALESCE(agents.office_code, 'N/A') AS office_code,
+            COALESCE(agents.office_code_2, 'N/A') AS office_code_2
+        FROM merchants
+        LEFT JOIN agents ON merchants.outside_agent = agents.partner_name
+        ORDER BY merchants.account_name;
     """
-    cur.execute(query, (per_page, offset))
+    cur.execute(query)
     rows = cur.fetchall()
     cur.close()
     conn.close()
 
-    columns = ["Partner Name", "Office Code", "Office Code 2", "Split", "PCI Fee", "Sales ID", "PCI Amount", "Account Name", "Outside Agent"]
-    return pd.DataFrame(rows, columns=columns) if rows else None
+    if not rows:
+        return None
 
-# Streamlit UI for pagination
-st.title("Zoho CRM Data Viewer")
+    columns = ["Merchant Name", "Sales ID", "PCI Fee", "PCI Amount", "Split", "Agent Name", "Agent Office Code", "Agent Office Code 2"]
+    return pd.DataFrame(rows, columns=columns)
 
-# Pagination Controls
-page = st.number_input("Page Number", min_value=1, step=1, value=1)
-per_page = 200
+# Streamlit UI
+st.title("📊 Merchant & Agent Viewer")
 
 # Fetch and display data
-data = fetch_paginated_data(page=page, per_page=per_page)
+data = fetch_merchant_data()
 if data is not None and not data.empty:
     st.dataframe(data)
 else:
-    st.warning("No data found.")
+    st.warning("⚠️ No data found. Try running `python fetch_data.py` again.")
