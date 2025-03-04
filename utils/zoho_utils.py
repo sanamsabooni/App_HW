@@ -1,37 +1,39 @@
-import requests
-from config import ZOHO_API_URL, ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN
+'''
+This module provides utility functions for interacting with the Zoho API.
+It includes functions for fetching data and handling API responses.
+'''
 
-def get_access_token():
-    """Fetches a new Zoho OAuth access token."""
-    url = "https://accounts.zoho.com/oauth/v2/token"
-    payload = {
-        "refresh_token": ZOHO_REFRESH_TOKEN,
-        "client_id": ZOHO_CLIENT_ID,
-        "client_secret": ZOHO_CLIENT_SECRET,
-        "grant_type": "refresh_token"
+import requests
+import logging
+from zoho_api import refresh_access_token
+from config import ZOHO_API_BASE_URL
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+def fetch_zoho_module_data(module_name):
+    """Fetch data from a specific Zoho module."""
+    access_token = refresh_access_token()
+    if not access_token:
+        logging.error("Failed to retrieve access token. Cannot fetch data.")
+        return None
+    
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
     
-    response = requests.post(url, data=payload)
-    data = response.json()
-
-    if "access_token" in data:
-        return data["access_token"]
-    else:
-        print(f"❌ Failed to refresh token: {data}")
+    url = f"{ZOHO_API_BASE_URL}/{module_name}"
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        logging.info(f"Successfully fetched data from Zoho module: {module_name}")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error fetching data from Zoho API: {e}")
         return None
 
-def fetch_zoho_records(start_index=1, per_page=200):
-    """Fetches paginated records from Zoho API."""
-    access_token = get_access_token()
-    if not access_token:
-        return []
-    
-    headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
-    url = f"{ZOHO_API_URL}?start_index={start_index}&per_page={per_page}"
-    response = requests.get(url, headers=headers)
-    
-    if response.status_code == 200:
-        return response.json().get("data", [])
-    else:
-        print(f"❌ API Request Failed: {response.text}")
-        return []
+# Example usage (uncomment to test)
+# if __name__ == "__main__":
+#     data = fetch_zoho_module_data("Leads")
+#     print(data)

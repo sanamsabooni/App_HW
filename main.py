@@ -1,14 +1,34 @@
-import fetch_data
+# main.py
+
+import logging
+from fetch_data import fetch_data_from_zoho
+from database import Database
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def main():
-    """Main script to fetch and store data."""
-    print("🚀 Starting data fetch process...")
+    """Main function to fetch data from Zoho and store it in the database."""
+    db = Database()
     
-    try:
-        fetch_data.fetch_and_store_data()
-        print("✅ Data fetching and storage completed successfully.")
-    except Exception as e:
-        print(f"❌ Error during execution: {e}")
+    module_name = "Leads"  # Change this to fetch different module data
+    data = fetch_data_from_zoho(module_name)
+    
+    if data and "data" in data:
+        for record in data["data"]:
+            query = """
+            INSERT INTO leads (id, name, email, phone) 
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (id) DO UPDATE 
+            SET name = EXCLUDED.name, email = EXCLUDED.email, phone = EXCLUDED.phone;
+            """
+            params = (record.get("id"), record.get("Full_Name"), record.get("Email"), record.get("Phone"))
+            db.execute_query(query, params)
+        logging.info("Data successfully inserted/updated in the database.")
+    else:
+        logging.warning("No data received from Zoho.")
+    
+    db.close_connection()
 
 if __name__ == "__main__":
     main()

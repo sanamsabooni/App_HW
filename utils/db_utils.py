@@ -1,34 +1,34 @@
-import psycopg2
-from config import DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
+'''
+This module provides utility functions for database operations.
+It includes helper functions for executing queries and fetching results.
+'''
 
-def get_db_connection():
-    """Establishes a connection to the PostgreSQL database."""
-    try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            database=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        )
-        return conn
-    except Exception as e:
-        print(f"❌ Database connection error: {e}")
-        return None
+import logging
+from database import Database
 
-def insert_zoho_record(record):
-    """Inserts a single record into the database."""
-    conn = get_db_connection()
-    if not conn:
-        return
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+def insert_or_update_lead(record):
+    """Insert or update a lead in the database."""
+    db = Database()
+    query = """
+    INSERT INTO leads (id, name, email, phone) 
+    VALUES (%s, %s, %s, %s)
+    ON CONFLICT (id) DO UPDATE 
+    SET name = EXCLUDED.name, email = EXCLUDED.email, phone = EXCLUDED.phone;
+    """
+    params = (
+        record.get("id"),
+        record.get("Full_Name"),
+        record.get("Email"),
+        record.get("Phone")
+    )
     
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO zoho_accounts (account_id, pci_fee, pci_amnt, split) 
-        VALUES (%s, %s, %s, %s) 
-        ON CONFLICT (account_id) DO UPDATE SET pci_fee = EXCLUDED.pci_fee, pci_amnt = EXCLUDED.pci_amnt, split = EXCLUDED.split
-    """, (record.get("id"), record.get("PCI_Fee"), record.get("PCI_Amount"), record.get("Split")))
-    
-    conn.commit()
-    cursor.close()
-    conn.close()
-    print("✅ Record inserted/updated successfully.")
+    db.execute_query(query, params)
+    db.close_connection()
+
+# Example usage (uncomment to test)
+# if __name__ == "__main__":
+#     sample_record = {"id": 1, "Full_Name": "John Doe", "Email": "john@example.com", "Phone": "1234567890"}
+#     insert_or_update_lead(sample_record)

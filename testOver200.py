@@ -1,53 +1,34 @@
-import requests
-import os
-from dotenv import load_dotenv
+'''
+This script tests whether the API correctly handles fetching more than 200 records.
+It verifies that pagination works properly when the dataset exceeds the 200-record limit.
+'''
 
-# Load environment variables
-load_dotenv()
+import unittest
+from fetch_data import fetch_data_from_zoho
 
-# Zoho API Credentials
-ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID")
-ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET")
-ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN")
-ZOHO_API_URL = "https://www.zohoapis.com/crm/v2/Accounts"
-
-def get_access_token():
-    """Fetch new access token from Zoho API."""
-    url = "https://accounts.zoho.com/oauth/v2/token"
-    payload = {
-        "refresh_token": ZOHO_REFRESH_TOKEN,
-        "client_id": ZOHO_CLIENT_ID,
-        "client_secret": ZOHO_CLIENT_SECRET,
-        "grant_type": "refresh_token"
-    }
+class TestOver200Records(unittest.TestCase):
+    """Unit test for fetching more than 200 records from Zoho API."""
     
-    response = requests.post(url, data=payload)
-    data = response.json()
+    def test_fetch_more_than_200(self):
+        """Ensure that multiple pages are fetched if data exceeds 200 records."""
+        module_name = "Leads"
+        all_data = []
+        page = 1
 
-    if "access_token" in data:
-        return data["access_token"]
-    else:
-        print(f"❌ Failed to fetch token: {data}")
-        return None
+        while True:
+            data = fetch_data_from_zoho(f"{module_name}?page={page}")
+            
+            if not data or "data" not in data:
+                break
+            
+            all_data.extend(data["data"])
+            
+            if len(data["data"]) < 200:
+                break  # Stop if the last page contains less than 200 records
+            
+            page += 1
+        
+        self.assertGreater(len(all_data), 200, "Total records fetched should exceed 200.")
 
-# Fetch and print API response info section
-def check_pagination_info():
-    """Fetch Zoho API response and print pagination info."""
-    access_token = get_access_token()
-    if not access_token:
-        print("❌ No valid access token.")
-        return
-
-    headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
-    url = f"{ZOHO_API_URL}?per_page=200"
-    
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        print("📡 API Response Info Section:")
-        print(data.get("info", {}))  # Print only the "info" section
-    else:
-        print(f"❌ API Request Failed: {response.text}")
-
-check_pagination_info()
+if __name__ == "__main__":
+    unittest.main()

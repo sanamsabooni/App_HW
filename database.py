@@ -23,32 +23,72 @@ def get_db_connection():
         print(f"Database connection failed: {e}")
         return None
 
-def create_accounts_table():
-    """Creates the accounts table if it does not exist."""
+def recreate_tables():
+    """Drops tables if they exist and recreates them."""
     conn = get_db_connection()
     if conn is None:
         return
 
     cur = conn.cursor()
-    create_table_query = """
-    CREATE TABLE IF NOT EXISTS accounts (
+    
+    drop_tables = """
+    DROP TABLE IF EXISTS zoho_accounts_table CASCADE;
+    DROP TABLE IF EXISTS agents CASCADE;
+    DROP TABLE IF EXISTS merchants CASCADE;
+    """
+
+    create_zoho_accounts_table = """
+    CREATE TABLE zoho_accounts_table (
+        id SERIAL PRIMARY KEY,
+        account_id TEXT UNIQUE,
+        partner_name TEXT,
+        office_code TEXT ,
+        office_code_2 TEXT,
+        split TEXT,
+        pci_fee TEXT,
+        merchant_number TEXT UNIQUE,
+        sales_id TEXT UNIQUE,
+        pci_amnt TEXT,
+        account_name TEXT,
+        outside_agent TEXT,
+        layout TEXT
+    );
+    """
+
+    create_agents_table = """
+    CREATE TABLE agents (
         id SERIAL PRIMARY KEY,
         partner_name TEXT,
         office_code TEXT,
         office_code_2 TEXT,
         split TEXT,
         pci_fee TEXT,
-        sales_id TEXT UNIQUE,
-        pci_amnt TEXT,
-        account_name TEXT,
-        outside_agent TEXT
+        account_name TEXT UNIQUE,
+        layout TEXT
     );
     """
-    cur.execute(create_table_query)
+
+    create_merchants_table = """
+    CREATE TABLE merchants (
+        id SERIAL PRIMARY KEY,
+        merchant_number TEXT UNIQUE,
+        account_name TEXT,
+        sales_id TEXT UNIQUE,
+        outside_agent TEXT,
+        pci_amnt TEXT,
+        layout TEXT
+    );
+    """
+
+    cur.execute(drop_tables)
+    cur.execute(create_zoho_accounts_table)
+    cur.execute(create_agents_table)
+    cur.execute(create_merchants_table)
+
     conn.commit()
     cur.close()
     conn.close()
-    print("Accounts table checked/created successfully.")
+    print("✅ Tables dropped and recreated successfully.")
 
 if __name__ == "__main__":
-    create_accounts_table()
+    recreate_tables()
