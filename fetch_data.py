@@ -51,10 +51,12 @@ def fetch_and_store_data():
 
             for account in records:
                 account_id = clean_value(account.get("id"))
+                account_number = clean_value(account.get("account_number"))
                 partner_name = clean_value(account.get("Partner_Name"))
                 office_code = clean_value(account.get("Office_Code"))
                 office_code_2 = clean_value(account.get("Office_Code_2"))
                 split = clean_value(account.get("Split"))
+                split_2 = clean_value(account.get("Split_2"))
                 pci_fee = clean_value(account.get("PCI_Fee"))
                 sales_id = clean_value(account.get("Sales_ID"))
                 pci_amnt = clean_value(account.get("PCI_Amnt"))
@@ -65,39 +67,63 @@ def fetch_and_store_data():
 
                 # ✅ Insert into zoho_accounts_table (All Records)
                 cur.execute("""
-                    INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, pci_fee, Merchant_Number, sales_id, pci_amnt, account_name, outside_agent, layout)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (sales_id) DO UPDATE 
-                    SET partner_name = EXCLUDED.partner_name, office_code = EXCLUDED.office_code, office_code_2 = EXCLUDED.office_code_2,
-                        split = EXCLUDED.split, pci_fee = EXCLUDED.pci_fee, merchant_number = EXCLUDED.merchant_number, pci_amnt = EXCLUDED.pci_amnt, 
-                        account_name = EXCLUDED.account_name, outside_agent = EXCLUDED.outside_agent, layout = EXCLUDED.layout;
-                """, (account_id, partner_name, office_code, office_code_2, split, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, layout))
+                    INSERT INTO zoho_accounts_table (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, layout)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (account_number) DO UPDATE 
+                    SET account_id = EXCLUDED.account_id,
+                        partner_name = EXCLUDED.partner_name, 
+                        office_code = EXCLUDED.office_code, 
+                        office_code_2 = EXCLUDED.office_code_2,
+                        split = EXCLUDED.split, 
+                        split_2 = EXCLUDED.split_2, 
+                        pci_fee = EXCLUDED.pci_fee, 
+                        merchant_number = EXCLUDED.merchant_number, 
+                        sales_id = EXCLUDED.sales_id, 
+                        pci_amnt = EXCLUDED.pci_amnt, 
+                        account_name = EXCLUDED.account_name, 
+                        outside_agent = EXCLUDED.outside_agent, 
+                        layout = EXCLUDED.layout;
+                """, (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, layout))
 
                 # ✅ Insert into Agents Table
-                if partner_name:
+                if split:
                     cur.execute("""
-                        INSERT INTO agents (partner_name, office_code, office_code_2, split, pci_fee, account_name, layout)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (account_name) DO UPDATE SET 
-                        office_code = EXCLUDED.office_code, office_code_2 = EXCLUDED.office_code_2,
-                        split = EXCLUDED.split, pci_fee = EXCLUDED.pci_fee, 
-                        layout = EXCLUDED.layout;
-                    """, (partner_name, office_code, office_code_2, split, pci_fee, account_name, layout))
+                        INSERT INTO agents (account_number, partner_name, office_code, office_code_2, split, split_2, pci_fee, account_name, layout)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (account_number) DO UPDATE 
+                        SET partner_name = EXCLUDED.partner_name, 
+                            office_code = EXCLUDED.office_code,
+                            office_code_2 = EXCLUDED.office_code_2,
+                            split = EXCLUDED.split, 
+                            split_2 = EXCLUDED.split_2, 
+                            pci_fee = EXCLUDED.pci_fee,
+                            account_name = EXCLUDED.account_name,
+                            layout = EXCLUDED.layout;
+                    """, (account_number, partner_name, office_code, office_code_2, split, split_2, pci_fee, account_name, layout))
+
+
 
                 # ✅ Insert into Merchants Table
-                else:
+                if merchant_number:
                     cur.execute("""
-                        INSERT INTO merchants (Merchant_Number, account_name, sales_id, outside_agent, pci_amnt, layout)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (sales_id) DO UPDATE SET 
-                        merchant_number = EXCLUDED.merchant_number, account_name = EXCLUDED.account_name, sales_id = EXCLUDED.sales_id, outside_agent = EXCLUDED.outside_agent, pci_amnt = EXCLUDED.pci_amnt,
-                        layout = EXCLUDED.layout;
-                    """, (merchant_number, account_name, sales_id, outside_agent, pci_amnt, layout))
+                        INSERT INTO merchants (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, layout)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (account_number) DO UPDATE 
+                        SET merchant_number = EXCLUDED.merchant_number,
+                            account_name = EXCLUDED.account_name, 
+                            sales_id = EXCLUDED.sales_id, 
+                            outside_agent = EXCLUDED.outside_agent, 
+                            pci_amnt = EXCLUDED.pci_amnt,
+                            layout = EXCLUDED.layout;
+                    """, (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, layout))
 
             conn.commit()
             print(f"📢 Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
 
             page += 1  # Move to the next page
+        else:
+            print(f"❌ Error fetching page {page}: {response.text}")
+            break
 
     cur.close()
     conn.close()

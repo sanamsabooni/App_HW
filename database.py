@@ -40,14 +40,16 @@ def recreate_tables():
     create_zoho_accounts_table = """
     CREATE TABLE zoho_accounts_table (
         id SERIAL PRIMARY KEY,
+        account_number TEXT UNIQUE,
         account_id TEXT UNIQUE,
         partner_name TEXT,
         office_code TEXT ,
         office_code_2 TEXT,
         split TEXT,
+        split_2 TEXT,
         pci_fee TEXT,
         merchant_number TEXT UNIQUE,
-        sales_id TEXT UNIQUE,
+        sales_id TEXT,
         pci_amnt TEXT,
         account_name TEXT,
         outside_agent TEXT,
@@ -58,10 +60,12 @@ def recreate_tables():
     create_agents_table = """
     CREATE TABLE agents (
         id SERIAL PRIMARY KEY,
+        account_number TEXT UNIQUE, 
         partner_name TEXT,
         office_code TEXT,
         office_code_2 TEXT,
         split TEXT,
+        split_2 TEXT,
         pci_fee TEXT,
         account_name TEXT UNIQUE,
         layout TEXT
@@ -71,9 +75,10 @@ def recreate_tables():
     create_merchants_table = """
     CREATE TABLE merchants (
         id SERIAL PRIMARY KEY,
+        account_number TEXT UNIQUE, 
         merchant_number TEXT UNIQUE,
         account_name TEXT,
-        sales_id TEXT UNIQUE,
+        sales_id TEXT,
         outside_agent TEXT,
         pci_amnt TEXT,
         layout TEXT

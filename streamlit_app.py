@@ -36,7 +36,7 @@ def fetch_merchant_data():
     # Set the correct column order
     columns = [
         "Sales ID", "PCI Amount", "Account Name", "Outside Agent", 
-        "Split", "PCI Fee", "Partner Name", "Office Code", "Office Code 2"
+        "Split", "Split2", "PCI Fee", "Partner Name", "Office Code", "Office Code 2"
     ]
     return pd.DataFrame(rows, columns=columns)
 
