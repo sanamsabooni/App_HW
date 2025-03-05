@@ -63,12 +63,13 @@ def fetch_and_store_data():
                 merchant_number = clean_value(account.get("Merchant_Number"))                
                 account_name = clean_value(account.get("Account_Name"))
                 outside_agent = clean_value(account.get("Outside_Agent"))
+                date_approved = clean_value(account.get("Date_Approved"))
                 layout = clean_value(account.get("Layout"))
 
                 # ✅ Insert into zoho_accounts_table (All Records)
                 cur.execute("""
-                    INSERT INTO zoho_accounts_table (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, layout)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO zoho_accounts_table (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, date_approved, layout)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (account_number) DO UPDATE 
                     SET account_id = EXCLUDED.account_id,
                         partner_name = EXCLUDED.partner_name, 
@@ -82,8 +83,9 @@ def fetch_and_store_data():
                         pci_amnt = EXCLUDED.pci_amnt, 
                         account_name = EXCLUDED.account_name, 
                         outside_agent = EXCLUDED.outside_agent, 
+                        date_approved = EXCLUDED.date_approved, 
                         layout = EXCLUDED.layout;
-                """, (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, layout))
+                """, (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, date_approved, layout))
 
                 # ✅ Insert into Agents Table
                 if split:
@@ -106,16 +108,17 @@ def fetch_and_store_data():
                 # ✅ Insert into Merchants Table
                 if merchant_number:
                     cur.execute("""
-                        INSERT INTO merchants (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, layout)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO merchants (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, date_approved, layout)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_number) DO UPDATE 
                         SET merchant_number = EXCLUDED.merchant_number,
                             account_name = EXCLUDED.account_name, 
                             sales_id = EXCLUDED.sales_id, 
                             outside_agent = EXCLUDED.outside_agent, 
                             pci_amnt = EXCLUDED.pci_amnt,
+                            date_approved = EXCLUDED.date_approved,
                             layout = EXCLUDED.layout;
-                    """, (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, layout))
+                    """, (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, date_approved, layout))
 
             conn.commit()
             print(f"📢 Page {page}: Inserted {len(records)} records. Total so far: {total_records}")

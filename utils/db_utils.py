@@ -6,6 +6,7 @@ It includes helper functions for executing queries and fetching results.
 import logging
 from database import Database
 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 

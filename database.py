@@ -53,6 +53,7 @@ def recreate_tables():
         pci_amnt TEXT,
         account_name TEXT,
         outside_agent TEXT,
+        date_approved Date,
         layout TEXT
     );
     """
@@ -81,6 +82,7 @@ def recreate_tables():
         sales_id TEXT,
         outside_agent TEXT,
         pci_amnt TEXT,
+        date_approved Date,
         layout TEXT
     );
     """
