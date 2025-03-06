@@ -31,6 +31,8 @@ queries = {
             m.account_name, 
             m.sales_id, 
             COALESCE(a.partner_name, 'Unknown') AS agent_name,  -- Ensure Agent Name Appears
+            TO_CHAR(m.date_approved, 'YYYY-MM') AS approval_month, -- Format approval date
+            TO_CHAR(m.date_approved + INTERVAL '2 months', 'YYYY-MM') AS second_month, -- Add 2 months and format
             COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,  
             COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
             ROUND(
