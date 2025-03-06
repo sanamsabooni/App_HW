@@ -1,12 +1,16 @@
-import psycopg2
-import pandas as pd
-from utils.db_utils import get_db_connection  # Import existing DB connection function
 import sys
-sys.path.append("utils")  # Ensure Python can find utils module
-from db_utils import get_db_connection
+import os
+import pandas as pd
+from utils.db_utils import get_db_connection
 
-# Establish connection
-conn = get_db_connection()
+# Ensure Python looks in the correct directory first
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "utils")))
+
+# Get database engine instead of raw connection
+engine = get_db_connection()
+if engine is None:
+    print("❌ Database connection failed. Exiting.")
+    sys.exit(1)
 
 # SQL queries
 queries = {
@@ -19,15 +23,14 @@ queries = {
     """,
     "full_data": """
         SELECT * FROM zoho_accounts_table;
-        SELECT * FROM Agents;
-        SELECT * FROM merchants;
     """,
-    "merchant_data": """
+    "pci_report": """
         SELECT 
             m.id, 
             m.merchant_number, 
             m.account_name, 
             m.sales_id, 
+            COALESCE(a.partner_name, 'Unknown') AS agent_name,  -- Ensure Agent Name Appears
             COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,  
             COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
             ROUND(
@@ -47,73 +50,16 @@ queries = {
             ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) 
             OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
         WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
-    """,
-    "pivot_agents": """
-        SELECT 
-            a.account_name AS agent_name,  
-            sub.sales_id, 
-            SUM(sub.pci_amnt - sub.pci_fee) AS cumulative_pci_difference
-        FROM (
-            SELECT 
-                m.sales_id, 
-                COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
-                COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee
-            FROM Merchants m
-            LEFT JOIN Agents a 
-                ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) 
-                OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
-            WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
-        ) AS sub
-        LEFT JOIN Agents a ON TRIM(LOWER(sub.sales_id)) = TRIM(LOWER(a.office_code)) 
-                          OR TRIM(LOWER(sub.sales_id)) = TRIM(LOWER(a.office_code_2))
-        GROUP BY a.account_name, sub.sales_id
-        ORDER BY sub.sales_id;
-    """,
-    "agent_payments": """
-        SELECT 
-            a.account_name AS agent_name,  
-            SUM(sub.pci_amnt - sub.pci_fee) AS total_pci_difference,
-            ROUND(
-                CASE 
-                    WHEN SUM(sub.pci_amnt - sub.pci_fee) < 0 THEN SUM(sub.pci_amnt - sub.pci_fee)
-                    ELSE SUM(sub.pci_amnt - sub.pci_fee) * AVG(sub.split_value)
-                END, 2
-            ) AS adjusted_pci_value
-        FROM (
-            SELECT 
-                m.sales_id, 
-                COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
-                COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,
-                ROUND(
-                    COALESCE(
-                        CASE 
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN 
-                                (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN 
-                                (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            ELSE 0
-                        END, 0
-                    ), 2
-                ) AS split_value
-            FROM Merchants m
-            LEFT JOIN Agents a 
-                ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) 
-                OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
-            WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
-        ) AS sub
-        LEFT JOIN Agents a 
-            ON TRIM(LOWER(sub.sales_id)) = TRIM(LOWER(a.office_code)) 
-            OR TRIM(LOWER(sub.sales_id)) = TRIM(LOWER(a.office_code_2))
-        GROUP BY a.account_name
-        ORDER BY total_pci_difference DESC;
     """
 }
 
 # Execute queries and save results
 for name, query in queries.items():
-    df = pd.read_sql_query(query, conn)
-    df.to_csv(f"{name}.csv", index=False)  # Save each query result as CSV
-    print(f"Report {name}.csv generated.")
+    try:
+        df = pd.read_sql_query(query, engine)  # Use engine instead of conn
+        df.to_csv(f"{name}.csv", index=False)
+        print(f"✅ Report {name}.csv generated.")
+    except Exception as e:
+        print(f"❌ Error executing {name}: {e}")
 
-# Close connection
-conn.close()
+print("✅ Report generation completed.")

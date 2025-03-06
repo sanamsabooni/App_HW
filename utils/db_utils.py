@@ -1,35 +1,20 @@
-'''
-This module provides utility functions for database operations.
-It includes helper functions for executing queries and fetching results.
-'''
+import psycopg2
+import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
-import logging
-from database import Database
+load_dotenv()
 
+DB_HOST = os.getenv("RDS_HOST")
+DB_NAME = os.getenv("RDS_DB")
+DB_USER = os.getenv("RDS_USER")
+DB_PASSWORD = os.getenv("RDS_PASSWORD")
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
-def insert_or_update_lead(record):
-    """Insert or update a lead in the database."""
-    db = Database()
-    query = """
-    INSERT INTO leads (id, name, email, phone) 
-    VALUES (%s, %s, %s, %s)
-    ON CONFLICT (id) DO UPDATE 
-    SET name = EXCLUDED.name, email = EXCLUDED.email, phone = EXCLUDED.phone;
-    """
-    params = (
-        record.get("id"),
-        record.get("Full_Name"),
-        record.get("Email"),
-        record.get("Phone")
-    )
-    
-    db.execute_query(query, params)
-    db.close_connection()
-
-# Example usage (uncomment to test)
-# if __name__ == "__main__":
-#     sample_record = {"id": 1, "Full_Name": "John Doe", "Email": "john@example.com", "Phone": "1234567890"}
-#     insert_or_update_lead(sample_record)
+def get_db_connection():
+    """Establish and return a SQLAlchemy database connection."""
+    try:
+        engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")
+        return engine
+    except Exception as e:
+        print(f"❌ Database connection failed: {e}")
+        return None

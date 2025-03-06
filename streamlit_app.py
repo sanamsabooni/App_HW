@@ -1,51 +1,54 @@
 import streamlit as st
 import pandas as pd
-from database import get_db_connection
+import os
 
-def fetch_merchant_data():
-    """Fetch merchant-agent data with correct column order."""
-    conn = get_db_connection()
-    if not conn:
-        st.error("❌ Database connection failed!")
+# Page Configuration
+st.set_page_config(page_title="HubWallet Reports", layout="wide")
+
+# Load Data
+@st.cache_data
+def load_data(filename):
+    if os.path.exists(filename):
+        return pd.read_csv(filename)
+    else:
         return None
 
-    cur = conn.cursor()
-    query = """
-        SELECT 
-            merchants.sales_id,
-            merchants.pci_amnt,
-            merchants.account_name,
-            merchants.outside_agent,
-            merchants.split,
-            merchants.pci_fee,
-            COALESCE(agents.partner_name, 'No Agent') AS partner_name,
-            COALESCE(agents.office_code, 'N/A') AS office_code,
-            COALESCE(agents.office_code_2, 'N/A') AS office_code_2
-        FROM merchants
-        LEFT JOIN agents ON merchants.outside_agent = agents.partner_name
-        ORDER BY merchants.sales_id;
-    """
-    cur.execute(query)
-    rows = cur.fetchall()
-    cur.close()
-    conn.close()
+# Sidebar Navigation
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to", ["Count Tables", "Full Data", "PCI Report"])
 
-    if not rows:
-        return None
+# Load Reports
+count_tables = load_data("count_tables.csv")
+full_data = load_data("full_data.csv")
+pci_report = load_data("pci_report.csv")
 
-    # Set the correct column order
-    columns = [
-        "Sales ID", "PCI Amount", "Account Name", "Outside Agent", 
-        "Split", "Split2", "PCI Fee", "Partner Name", "Office Code", "Office Code 2"
-    ]
-    return pd.DataFrame(rows, columns=columns)
+# Display Selected Page
+st.title("HubWallet Reports Dashboard")
 
-# Streamlit UI
-st.title("📊 Merchant & Agent Viewer")
+if page == "Count Tables":
+    st.header("📊 Table Counts")
+    if count_tables is not None:
+        st.dataframe(count_tables)
+    else:
+        st.warning("No data available. Run the report script first.")
 
-# Fetch and display data
-data = fetch_merchant_data()
-if data is not None and not data.empty:
-    st.dataframe(data)
-else:
-    st.warning("⚠️ No data found. Try running `python fetch_data.py` again.")
+elif page == "Full Data":
+    st.header("📂 Full Data")
+    if full_data is not None:
+        st.dataframe(full_data)
+    else:
+        st.warning("No data available. Run the report script first.")
+
+elif page == "PCI Report":
+    st.header("💰 PCI Report")
+    if pci_report is not None:
+        st.dataframe(pci_report)
+    else:
+        st.warning("No data available. Run the report script first.")
+
+# Refresh Button
+if st.button("🔄 Refresh Data"):
+    st.cache_data.clear()
+    st.experimental_rerun()
+
+st.sidebar.success("Use the navigation to view different reports.")
