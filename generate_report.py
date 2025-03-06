@@ -26,13 +26,12 @@ queries = {
     """,
     "pci_report": """
         SELECT 
-            m.id, 
-            m.merchant_number, 
+            CAST(m.merchant_number AS TEXT) AS merchant_number,  -- Ensure text format
             m.account_name, 
             m.sales_id, 
             COALESCE(a.partner_name, 'Unknown') AS agent_name,  -- Ensure Agent Name Appears
             TO_CHAR(m.date_approved, 'YYYY-MM') AS approval_month, -- Format approval date
-            TO_CHAR(m.date_approved + INTERVAL '2 months', 'YYYY-MM') AS second_month, -- Add 2 months and format
+            TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS effective_month, -- Show only month name
             COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,  
             COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
             ROUND(
@@ -59,6 +58,8 @@ queries = {
 for name, query in queries.items():
     try:
         df = pd.read_sql_query(query, engine)  # Use engine instead of conn
+        if 'merchant_number' in df.columns:
+            df['merchant_number'] = df['merchant_number'].astype(str)  # Ensure text format in CSV
         df.to_csv(f"{name}.csv", index=False)
         print(f"✅ Report {name}.csv generated.")
     except Exception as e:
