@@ -1,68 +1,138 @@
-import sys
+import requests
+import psycopg2
 import os
-import pandas as pd
-from utils.db_utils import get_db_connection
+from dotenv import load_dotenv
+from zoho_api import get_access_token  # ✅ Correct function name
+import ace_tools
 
-# Ensure Python looks in the correct directory first
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "utils")))
 
-# Get database engine instead of raw connection
-engine = get_db_connection()
-if engine is None:
-    print("❌ Database connection failed. Exiting.")
-    sys.exit(1)
+# Load environment variables
+load_dotenv()
 
-# SQL queries
-queries = {
-    "count_tables": """
-        SELECT 'zoho_accounts_table' AS table_name, COUNT(*) AS row_count FROM zoho_accounts_table
-        UNION ALL
-        SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM Agents
-        UNION ALL
-        SELECT 'merchants' AS table_name, COUNT(*) AS row_count FROM merchants;
-    """,
-    "full_data": """
-        SELECT * FROM zoho_accounts_table;
-    """,
-    "pci_report": """
-        SELECT 
-            CAST(m.merchant_number AS TEXT) AS merchant_number,  -- Ensure text format
-            m.account_name, 
-            m.sales_id, 
-            COALESCE(a.partner_name, 'Unknown') AS agent_name,  -- Ensure Agent Name Appears
-            TO_CHAR(m.date_approved, 'YYYY-MM') AS approval_month, -- Format approval date
-            TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS effective_month, -- Show only month name
-            COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,  
-            COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
-            ROUND(
-                COALESCE(
-                    CASE 
-                        WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN 
-                            (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                        WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN 
-                            (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
-                        ELSE 0
-                    END, 0
-                ), 2
-            ) AS split_value,
-            COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0) AS pci_difference
-        FROM Merchants m
-        LEFT JOIN Agents a 
-            ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) 
-            OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
-        WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
-    """
-}
+# Database connection details
+DB_HOST = os.getenv("RDS_HOST")
+DB_NAME = os.getenv("RDS_DB")
+DB_USER = os.getenv("RDS_USER")
+DB_PASSWORD = os.getenv("RDS_PASSWORD")
+API_URL = "https://www.zohoapis.com/crm/v2/Accounts"
 
-# Execute queries and save results
-for name, query in queries.items():
-    try:
-        df = pd.read_sql_query(query, engine)  # Use engine instead of conn
-        if 'merchant_number' in df.columns:
-            df['merchant_number'] = df['merchant_number'].astype(str)  # Ensure text format in CSV
-        df.to_csv(f"{name}.csv", index=False)
-        print(f"✅ Report {name}.csv generated.")
-    except Exception as e:
-        print(f"❌ Error executing {name}: {e}")
+def clean_value(value):
+    """Ensure values are strings and extract 'display_value' if value is a dictionary."""
+    if isinstance(value, dict):
+        return value.get("display_value", "")  # Extract display_value if exists
+    return str(value) if value else None  # Convert to string or None
 
-print("✅ Report generation completed.")
+def fetch_and_store_data():
+    """Fetch all paginated data from Zoho API and store it in PostgreSQL."""
+    access_token = get_access_token()
+    if not access_token:
+        print("❌ Failed to get access token. Exiting.")
+        return
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    cur = conn.cursor()
+
+    page = 1
+    total_records = 0
+
+    while True:
+        response = requests.get(f"{API_URL}?page={page}&per_page=200", headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            records = data.get("data", [])
+            total_records += len(records)
+
+            if not records:
+                break  # No more records, stop fetching
+
+            for account in records:
+                account_id = clean_value(account.get("id"))
+                account_number = clean_value(account.get("account_number"))
+                partner_name = clean_value(account.get("Partner_Name"))
+                office_code = clean_value(account.get("Office_Code"))
+                office_code_2 = clean_value(account.get("Office_Code_2"))
+                split = clean_value(account.get("Split"))
+                split_2 = clean_value(account.get("Split_2"))
+                pci_fee = clean_value(account.get("PCI_Fee"))
+                sales_id = clean_value(account.get("Sales_ID"))
+                pci_amnt = clean_value(account.get("PCI_Amnt"))
+                merchant_number = clean_value(account.get("Merchant_Number"))                
+                account_name = clean_value(account.get("Account_Name"))
+                outside_agent = clean_value(account.get("Outside_Agent"))
+                date_approved = clean_value(account.get("Date_Approved"))
+                layout = clean_value(account.get("Layout"))
+
+                # ✅ Insert into zoho_accounts_table (All Records)
+                cur.execute("""
+                    INSERT INTO zoho_accounts_table (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, date_approved, layout)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (account_number) DO UPDATE 
+                    SET account_id = EXCLUDED.account_id,
+                        partner_name = EXCLUDED.partner_name, 
+                        office_code = EXCLUDED.office_code, 
+                        office_code_2 = EXCLUDED.office_code_2,
+                        split = EXCLUDED.split, 
+                        split_2 = EXCLUDED.split_2, 
+                        pci_fee = EXCLUDED.pci_fee, 
+                        merchant_number = EXCLUDED.merchant_number, 
+                        sales_id = EXCLUDED.sales_id, 
+                        pci_amnt = EXCLUDED.pci_amnt, 
+                        account_name = EXCLUDED.account_name, 
+                        outside_agent = EXCLUDED.outside_agent, 
+                        date_approved = EXCLUDED.date_approved, 
+                        layout = EXCLUDED.layout;
+                """, (account_number, account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, sales_id, pci_amnt, account_name, outside_agent, date_approved, layout))
+
+                # ✅ Insert into Agents Table
+                if split:
+                    cur.execute("""
+                        INSERT INTO agents (account_number, partner_name, office_code, office_code_2, split, split_2, pci_fee, account_name, layout)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (account_number) DO UPDATE 
+                        SET partner_name = EXCLUDED.partner_name, 
+                            office_code = EXCLUDED.office_code,
+                            office_code_2 = EXCLUDED.office_code_2,
+                            split = EXCLUDED.split, 
+                            split_2 = EXCLUDED.split_2, 
+                            pci_fee = EXCLUDED.pci_fee,
+                            account_name = EXCLUDED.account_name,
+                            layout = EXCLUDED.layout;
+                    """, (account_number, partner_name, office_code, office_code_2, split, split_2, pci_fee, account_name, layout))
+
+
+
+                # ✅ Insert into Merchants Table
+                if merchant_number:
+                    cur.execute("""
+                        INSERT INTO merchants (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, date_approved, layout)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (account_number) DO UPDATE 
+                        SET merchant_number = EXCLUDED.merchant_number,
+                            account_name = EXCLUDED.account_name, 
+                            sales_id = EXCLUDED.sales_id, 
+                            outside_agent = EXCLUDED.outside_agent, 
+                            pci_amnt = EXCLUDED.pci_amnt,
+                            date_approved = EXCLUDED.date_approved,
+                            layout = EXCLUDED.layout;
+                    """, (account_number, merchant_number, account_name, sales_id, outside_agent, pci_amnt, date_approved, layout))
+
+            conn.commit()
+            print(f"📢 Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
+
+            page += 1  # Move to the next page
+        else:
+            print(f"❌ Error fetching page {page}: {response.text}")
+            break
+
+    cur.close()
+    conn.close()
+    print(f"✅ Total records inserted: {total_records}")
+
+if __name__ == "__main__":
+    fetch_and_store_data()

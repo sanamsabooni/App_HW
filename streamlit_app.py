@@ -43,12 +43,12 @@ count_tables = load_data_from_db(tables_query)
 full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
 pci_report = load_data_from_db("""
     SELECT
-        CAST(m.merchant_number AS TEXT) AS merchant_number, -- Ensure text format
+        CAST(m.merchant_number AS TEXT) AS merchant_number,
         m.account_name,
         m.sales_id,
-        COALESCE(a.partner_name, 'Unknown') AS agent_name, -- Ensure Agent Name Appears
-        TO_CHAR(m.date_approved, 'YYYY-MM') AS approval_month, -- Format approval date
-        TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS effective_month, -- Show only month name
+        COALESCE(a.partner_name, 'Unknown') AS agent_name,
+        TO_CHAR(m.date_approved, 'YYYY-MM') AS approval_month,
+        TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS effective_month,
         COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,
         COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,
         ROUND(
@@ -62,13 +62,38 @@ pci_report = load_data_from_db("""
                 END, 0
             ), 2
         ) AS split_value,
-        COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0) AS pci_difference
+        CASE
+            WHEN ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                      COALESCE(
+                        CASE
+                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                            ELSE 0
+                        END, 0), 2) < 0
+            THEN COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)
+            ELSE ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                      COALESCE(
+                        CASE
+                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                            ELSE 0
+                        END, 0), 2)
+        END AS pci_share
     FROM Merchants m
     LEFT JOIN Agents a
     ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
     OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
     WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
-""")  # Fetch PCI data from correct table
+""")
+
+# Remove pci_difference column before displaying
+if pci_report is not None:
+    pci_report = pci_report.drop(columns=['pci_difference'], errors='ignore')
+
 agents_data = load_data_from_db("SELECT partner_name, office_code, office_code_2, split, split_2, pci_fee FROM agents;")
 merchants_data = load_data_from_db("SELECT merchant_number, account_name, sales_id, pci_amnt, date_approved FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
 
