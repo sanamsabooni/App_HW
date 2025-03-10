@@ -62,33 +62,66 @@ pci_report = load_data_from_db("""
                 END, 0
             ), 2
         ) AS split_value,
-        CASE
-            WHEN ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
-                      COALESCE(
-                        CASE
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
-                                (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
-                                (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            ELSE 0
-                        END, 0), 2) < 0
-            THEN COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)
-            ELSE ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
-                      COALESCE(
-                        CASE
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
-                                (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
-                                (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            ELSE 0
-                        END, 0), 2)
-        END AS pci_share
+        ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+            COALESCE(
+                CASE
+                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                        (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                        (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                    ELSE 0
+                END, 0), 2) AS pci_share,
+        CASE 
+            WHEN ((CASE
+                WHEN ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                          COALESCE(
+                            CASE
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                    (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                    (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                ELSE 0
+                            END, 0), 2) < 0
+                THEN COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)
+                ELSE ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                          COALESCE(
+                            CASE
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                    (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                    (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                ELSE 0
+                            END, 0), 2)
+            END) * 0.15) < 0 THEN 0
+            ELSE ((CASE
+                WHEN ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                          COALESCE(
+                            CASE
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                    (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                    (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                ELSE 0
+                            END, 0), 2) < 0
+                THEN COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)
+                ELSE ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                          COALESCE(
+                            CASE
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                    (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                    (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                ELSE 0
+                            END, 0), 2)
+            END) * 0.15)
+        END AS max_share  -- Ensure non-negative values
     FROM Merchants m
     LEFT JOIN Agents a
     ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
     OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
     WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
 """)
+
 
 # Remove pci_difference column before displaying
 if pci_report is not None:
