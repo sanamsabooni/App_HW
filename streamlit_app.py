@@ -119,9 +119,9 @@ pci_report = load_data_from_db("""
     LEFT JOIN Agents a
     ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
     OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
-    WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
+    WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$' 
+    AND m.account_status = 'Approved';
 """)
-
 
 # Remove pci_difference column before displaying
 if pci_report is not None:

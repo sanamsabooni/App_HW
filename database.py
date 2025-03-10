@@ -51,7 +51,9 @@ def recreate_tables():
         sales_id TEXT,
         pci_amnt TEXT,
         account_name TEXT,
-        date_approved Date
+        date_approved Date,
+        Account_Status TEXT
+
     );
     """
 
@@ -77,7 +79,8 @@ def recreate_tables():
         account_name TEXT,
         sales_id TEXT,
         pci_amnt TEXT,
-        date_approved Date
+        date_approved Date,
+        Account_Status TEXT
     );
     """
 
