@@ -149,7 +149,7 @@ def fetch_orders_data(conn, cur, headers):
 
                 so_number = clean_value(record.get("SO_Number"))
                 merchant_number = clean_value(record.get("Merchant_Number"))
-                account_name = clean_value(record.get("Account_Name"))
+                merchant_number = clean_value(record.get("Merchant_Number"))
                 tech_setup_order_options = clean_value(record.get("Tech_Setup_Order_Options"))
                 communication_type = clean_value(record.get("Communication_Type"))
                 wireless_carrier = clean_value(record.get("Wireless_Carrier"))
@@ -162,21 +162,19 @@ def fetch_orders_data(conn, cur, headers):
 
                 # ✅ Insert into zoho_orders_table
                 cur.execute("""
-                    INSERT INTO zoho_orders_table (order_id, so_number, merchant_number, account_name, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agent, outside_agents, status, equipment_received_date)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO zoho_orders_table (order_id, so_number, merchant_number, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agents, status, equipment_received_date)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (so_number) DO UPDATE SET
-                        merchant_number = EXCLUDED.merchant_number,    
-                        account_name = EXCLUDED.account_name,
+                        merchant_number = EXCLUDED.merchant_number,
                         tech_setup_order_options = EXCLUDED.tech_setup_order_options,
                         communication_type = EXCLUDED.communication_type,
                         wireless_carrier = EXCLUDED.wireless_carrier,
                         terminal_detail = EXCLUDED.terminal_detail,
                         terminal_id = EXCLUDED.terminal_id,
-                        outside_agent = EXCLUDED.outside_agent,
                         outside_agents = EXCLUDED.outside_agents,
                         status = EXCLUDED.status,
                         equipment_received_date = EXCLUDED.equipment_received_date;
-                """, (order_id, so_number, merchant_number, account_name, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agent, outside_agents, status, equipment_received_date))
+                """, (order_id, so_number, merchant_number, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agents, status, equipment_received_date))
 
             conn.commit()
             print(f"📢 {module} - Page {page}: Inserted {len(records)} records. Total so far: {total_records}")

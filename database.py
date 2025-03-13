@@ -91,13 +91,11 @@ def recreate_tables():
                     order_id  SERIAL PRIMARY KEY,
                     so_number TEXT UNIQUE,
                     merchant_number TEXT,
-                    account_name TEXT,
                     tech_setup_order_options TEXT,
                     communication_type TEXT, 
                     wireless_carrier TEXT,
                     terminal_detail TEXT,
                     terminal_id TEXT,
-                    outside_agent TEXT,
                     outside_agents TEXT,
                     status TEXT, 
                     equipment_received_date DATE

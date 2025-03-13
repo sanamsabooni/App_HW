@@ -22,7 +22,7 @@ st.markdown("\n\n")  # Extra spacing
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Count Tables", "Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants"])
+page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "PCI Report", "Orders Full Data", "Agents", "Merchants"])
 
 # Database Connection
 engine = get_db_connection()  # Ensure this function returns a valid SQLAlchemy engine
@@ -53,10 +53,10 @@ tables_query = """
     SELECT 'Sales Orders' AS table_name, COUNT(*) AS row_count FROM zoho_orders_table;
 """
 count_tables = load_data_from_db(tables_query)
-full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
+Accounts_full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
 
 # PCI Report Query
-pci_report_query = """
+pci_report = load_data_from_db("""
     SELECT
         CAST(m.merchant_number AS TEXT) AS merchant_number,
         m.account_name,
@@ -66,8 +66,6 @@ pci_report_query = """
         TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS effective_month,
         COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,
         COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,
-
-        -- Split percentage calculation
         ROUND(
             COALESCE(
                 CASE
@@ -79,33 +77,19 @@ pci_report_query = """
                 END, 0
             ), 2
         ) AS split_value,
-
-        -- PCI share calculation
-        ROUND(
-            CASE 
-                WHEN COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0) < 0 
-                THEN COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)
-                ELSE (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
-                    COALESCE(
-                        CASE
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
-                                (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
-                                (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
-                            ELSE 0
-                        END, 0)
-            END, 2
-        ) AS pci_share,
-
-        -- Max share calculation
-        ROUND(
-            CASE 
-                WHEN (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) <= 0 
-                THEN 0
-                ELSE (
-                    (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) - 
-                    (
-                        (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+        ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+            COALESCE(
+                CASE
+                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                        (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                        (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                    ELSE 0
+                END, 0), 2) AS pci_share,
+        CASE 
+            WHEN (COALESCE(m.pci_amnt::NUMERIC, 0) - 
+                COALESCE(a.pci_fee::NUMERIC, 0) - 
+                ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
                         COALESCE(
                             CASE
                                 WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
@@ -113,36 +97,42 @@ pci_report_query = """
                                 WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
                                     (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
                                 ELSE 0
-                            END, 0)
-                    )
-                ) * 0.15
-            END, 2
-        ) AS max_share
+                            END, 0), 2)) * 0.15 < 0 
+            THEN 0
+            ELSE ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - 
+                        COALESCE(a.pci_fee::NUMERIC, 0) - 
+                        ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                            COALESCE(
+                                CASE
+                                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                        (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                        (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
+                                    ELSE 0
+                                END, 0), 2)) * 0.15, 2)
+        END AS max_share
 
-    FROM merchants m
-    LEFT JOIN agents a
-        ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
-        OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
+    FROM Merchants m
+    LEFT JOIN Agents a
+    ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
+    OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
+    WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
+""")
 
-    WHERE 
-        m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
-        AND m.account_status = 'Approved';
-"""
-pci_report = load_data_from_db(pci_report_query)
 
 # Remove pci_difference column before displaying
 if pci_report is not None:
     pci_report = pci_report.drop(columns=['pci_difference'], errors='ignore')
 
-# Equipment Report Query
-equipment_report_query = """
+# Orders Full Data Query
+Orders_Full_Data_query = """
     SELECT 
-        order_id, so_number, account_name, tech_setup_order_options, communication_type, 
+        order_id, so_number, merchant_number, tech_setup_order_options, communication_type, 
         wireless_carrier, terminal_detail, terminal_id, outside_agent, outside_agents, 
         status, equipment_received_date 
     FROM zoho_orders_table;
 """
-equipment_report = load_data_from_db(equipment_report_query)
+Orders_Full_Data = load_data_from_db(Orders_Full_Data_query)
 
 # Sales Orders Query
 sales_orders_query = """
@@ -165,10 +155,10 @@ if page == "Count Tables":
     else:
         st.warning("No data available. Run the report script first.")
 
-elif page == "Full Data":
-    st.header("📂 Full Data")
-    if full_data is not None:
-        st.dataframe(full_data)
+elif page == "Accounts Full Data":
+    st.header("📂 Accounts Full Data")
+    if Accounts_full_data is not None:
+        st.dataframe(Accounts_full_data)
     else:
         st.warning("No data available. Run the report script first.")
 
@@ -179,10 +169,10 @@ elif page == "PCI Report":
     else:
         st.warning("No data available. Run the report script first.")
 
-elif page == "Equipment Report":
-    st.header("🛠 Equipment Report")
-    if equipment_report is not None:
-        st.dataframe(equipment_report)
+elif page == "Orders Full Data":
+    st.header("🛠 Orders Full Data")
+    if Orders_Full_Data is not None:
+        st.dataframe(Orders_Full_Data)
     else:
         st.warning("No data available. Run the report script first.")
 
