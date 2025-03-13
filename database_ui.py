@@ -52,28 +52,28 @@ def show_instance_counts():
 def show_merchant_report():
     """Displays Merchant Report 1."""
     query = """
-    SELECT 
-        m.id, m.merchant_number, m.account_name, m.sales_id, 
-        a.account_name AS agent_name, 
-        TO_CHAR(m.date_approved, 'Month') AS approved_month, 
-        TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS pci_month, 
-        COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,  
-        COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,  
+    SELECT
+        m.id, m.merchant_number, m.account_name, m.sales_id,
+        a.account_name AS agent_name,
+        TO_CHAR(m.date_approved, 'Month') AS approved_month,
+        TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS pci_month,
+        COALESCE(a.pci_fee::NUMERIC, 0) AS pci_fee,
+        COALESCE(m.pci_amnt::NUMERIC, 0) AS pci_amnt,
         ROUND(
             COALESCE(
-                CASE 
-                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN 
+                CASE
+                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
                         (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN 
+                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
                         (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
                     ELSE 0
                 END, 0
             ), 2
-        ) AS split_value, 
+        ) AS split_value,
         COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0) AS pci_difference
     FROM Merchants m
-    LEFT JOIN Agents a 
-        ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) 
+    LEFT JOIN Agents a
+        ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
         OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
     WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
     ORDER BY pci_month, m.sales_id;
@@ -85,7 +85,7 @@ def show_merchant_report():
 def show_agent_report():
     """Displays Agent Report 1."""
     query = """
-    SELECT 
+    SELECT
         TO_CHAR(m.date_approved + INTERVAL '2 months', 'Month') AS pci_month, 
         a.account_name AS agent_name, 
         SUM(COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) AS cumulative_pci_difference
