@@ -52,6 +52,7 @@ def recreate_tables():
                     pci_fee TEXT,
                     merchant_number TEXT UNIQUE,
                     sales_id TEXT,
+                    outside_agents TEXT,
                     pci_amnt TEXT,
                     account_name TEXT,
                     date_approved DATE,
@@ -80,6 +81,7 @@ def recreate_tables():
                     merchant_number TEXT UNIQUE NOT NULL,
                     account_name TEXT,
                     sales_id TEXT,
+                    outside_agents TEXT,
                     pci_amnt TEXT,
                     date_approved DATE,
                     account_status TEXT

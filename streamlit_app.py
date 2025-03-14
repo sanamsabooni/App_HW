@@ -22,7 +22,7 @@ st.markdown("\n\n")  # Extra spacing
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "PCI Report", "Orders Full Data", "Agents", "Merchants"])
+page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants"])
 
 # Database Connection
 engine = get_db_connection()  # Ensure this function returns a valid SQLAlchemy engine
@@ -41,19 +41,32 @@ def load_data_from_db(query):
     #return pd.DataFrame()
     #*********************khate baadi ro hazd kon, balayi ro active kon!
     return None
-
+# Count Data for all tables Query
 # Load Reports from Database
 tables_query = """
-    SELECT 'zoho_accounts_table' AS table_name, COUNT(*) AS row_count FROM zoho_accounts_table 
+    SELECT 'zoho_accounts_table' AS table_name, COUNT(*) AS row_count FROM zoho_accounts_table
+    UNION ALL 
+    SELECT 'Sales Orders' AS table_name, COUNT(*) AS row_count FROM zoho_orders_table
     UNION ALL 
     SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents 
     UNION ALL 
-    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants
-    UNION ALL 
-    SELECT 'Sales Orders' AS table_name, COUNT(*) AS row_count FROM zoho_orders_table;
+    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants;
 """
 count_tables = load_data_from_db(tables_query)
-Accounts_full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
+
+
+# Accounts Full Data Query
+accounts_full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
+
+
+# Orders Full Data Query
+orders_full_data = load_data_from_db("SELECT * FROM zoho_orders_table;")
+
+
+# Agents & Merchants Queries
+agents_data = load_data_from_db("SELECT partner_name, office_code, office_code_2, split, split_2, pci_fee FROM agents;")
+merchants_data = load_data_from_db("SELECT merchant_number, account_name, account_status, sales_id, outside_agents,  pci_amnt, date_approved FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
+
 
 # PCI Report Query
 pci_report = load_data_from_db("""
@@ -118,35 +131,65 @@ pci_report = load_data_from_db("""
     OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
     WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
 """)
-
-
 # Remove pci_difference column before displaying
 if pci_report is not None:
     pci_report = pci_report.drop(columns=['pci_difference'], errors='ignore')
 
-# Orders Full Data Query
-Orders_Full_Data_query = """
+
+# Equipment report Query
+equipment_report = load_data_from_db("""
     SELECT 
-        order_id, so_number, merchant_number, tech_setup_order_options, communication_type, 
-        wireless_carrier, terminal_detail, terminal_id, outside_agent, outside_agents, 
-        status, equipment_received_date 
+        order_id, 
+        so_number, 
+        merchant_number, 
+        tech_setup_order_options, 
+        communication_type, 
+        wireless_carrier, 
+        terminal_detail, 
+        terminal_id, 
+        outside_agents, 
+        status, 
+        equipment_received_date,
+
+        -- Count occurrences of specific communication types
+        (CASE 
+            WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+            THEN 1 ELSE 0 
+        END) AS "Terminal/Gateway",
+
+        -- Count occurrences of specific terminal details
+        (CASE 
+            WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
+            THEN 1 ELSE 0 
+        END) AS "Valor Count"
+
     FROM zoho_orders_table;
-"""
-Orders_Full_Data = load_data_from_db(Orders_Full_Data_query)
+""")
 
-# Sales Orders Query
-sales_orders_query = """
-    SELECT order_id, so_number, merchant_number, account_name, status, equipment_received_date
+
+# Load the Equipment Report Pivot Table
+equipment_pivot_report = load_data_from_db("""
+    SELECT 
+        merchant_number,
+        SUM(
+            CASE 
+                WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+                THEN 1 ELSE 0 
+            END
+        ) AS "Total Terminal/Gateway",
+        
+        SUM(
+            CASE 
+                WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
+                THEN 1 ELSE 0 
+            END
+        ) AS "Total Valor Count"
+        
     FROM zoho_orders_table
-    ORDER BY equipment_received_date DESC;
-"""
-sales_orders_data = load_data_from_db(sales_orders_query)
+    GROUP BY merchant_number;
+""")
 
-# Agents & Merchants Queries
-agents_data = load_data_from_db("SELECT partner_name, office_code, office_code_2, split, split_2, pci_fee FROM agents;")
-merchants_data = load_data_from_db("SELECT merchant_number, account_name, sales_id, pci_amnt, date_approved FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
 
-# Display Selected Page
 # Display Selected Page
 if page == "Count Tables":
     st.header("📊 Table Counts")
@@ -157,31 +200,17 @@ if page == "Count Tables":
 
 elif page == "Accounts Full Data":
     st.header("📂 Accounts Full Data")
-    if Accounts_full_data is not None:
-        st.dataframe(Accounts_full_data)
-    else:
-        st.warning("No data available. Run the report script first.")
-
-elif page == "PCI Report":
-    st.header("💰 PCI Report")
-    if pci_report is not None:
-        st.dataframe(pci_report)
+    if accounts_full_data is not None:
+        st.dataframe(accounts_full_data)
     else:
         st.warning("No data available. Run the report script first.")
 
 elif page == "Orders Full Data":
-    st.header("🛠 Orders Full Data")
-    if Orders_Full_Data is not None:
-        st.dataframe(Orders_Full_Data)
+    st.header("📦 Orders Full Data")
+    if orders_full_data is not None:
+        st.dataframe(orders_full_data)
     else:
-        st.warning("No data available. Run the report script first.")
-
-elif page == "Sales Orders":
-    st.header("📑 Sales Orders Report")
-    if sales_orders_data is not None:
-        st.dataframe(sales_orders_data)
-    else:
-        st.warning("No data available. Run the report script first.")    
+        st.warning("No data available. Run the report script first.")  
 
 elif page == "Agents":
     st.header("🧑‍💼 Agents Table")
@@ -196,6 +225,30 @@ elif page == "Merchants":
         st.dataframe(merchants_data)
     else:
         st.warning("No data available. Run the report script first.")
+
+elif page == "PCI Report":
+    st.header("🧾 PCI Report")
+    if pci_report is not None:
+        st.dataframe(pci_report)
+    else:
+        st.warning("No data available. Run the report script first.")
+
+elif page == "Equipment Report":
+    st.header("🖨️ Equipment Report")
+    if equipment_report is not None:
+        st.dataframe(equipment_report)
+    else:
+        st.warning("No data available. Run the report script first.")
+
+    # Add a separator
+    st.markdown("---")
+
+    # Display Pivot Table Below
+    st.header("📊 Equipment Summary (Pivot Table)")
+    if equipment_pivot_report is not None:
+        st.dataframe(equipment_pivot_report)
+    else:
+        st.warning("No data available for pivot table.")
 
 # Refresh Button
 if st.button("🔄 Refresh Data"):
