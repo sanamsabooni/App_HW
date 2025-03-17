@@ -90,15 +90,24 @@ pci_report = load_data_from_db("""
                 END, 0
             ), 2
         ) AS split_value,
-        ROUND((COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
-            COALESCE(
-                CASE
-                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
-                        (REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100)
-                    WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
-                        (REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100)
-                    ELSE 0
-                END, 0), 2) AS pci_share,
+                               
+        ROUND(
+            CASE 
+                WHEN (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) < 0 
+                THEN (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0))
+                ELSE (COALESCE(m.pci_amnt::NUMERIC, 0) - COALESCE(a.pci_fee::NUMERIC, 0)) * 
+                    COALESCE(
+                        CASE
+                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code)) THEN
+                                REGEXP_REPLACE(a.split, '[^0-9]', '', 'g')::NUMERIC / 100
+                            WHEN TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2)) THEN
+                                REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g')::NUMERIC / 100
+                            ELSE 0
+                        END, 0)
+            END, 
+        2) AS pci_share,
+
+                               
         CASE 
             WHEN (COALESCE(m.pci_amnt::NUMERIC, 0) - 
                 COALESCE(a.pci_fee::NUMERIC, 0) - 
@@ -186,8 +195,24 @@ equipment_pivot_report = load_data_from_db("""
         ) AS "Total Valor Count"
         
     FROM zoho_orders_table
-    GROUP BY merchant_number;
+    WHERE LOWER(status) = 'completed'
+    GROUP BY merchant_number
+    HAVING 
+        SUM(
+            CASE 
+                WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+                THEN 1 ELSE 0 
+            END
+        ) > 0 
+        OR 
+        SUM(
+            CASE 
+                WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
+                THEN 1 ELSE 0 
+            END
+        ) > 0;
 """)
+
 
 
 # Display Selected Page
