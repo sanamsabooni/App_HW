@@ -17,7 +17,8 @@ DB_PASSWORD = os.getenv("RDS_PASSWORD")
 # Define API URLs for each module (FIXED module name for Orders)
 API_ENDPOINTS = {
     "Accounts": "https://www.zohoapis.com/crm/v2/Accounts",
-    "Sales_Orders": "https://www.zohoapis.com/crm/v2/Sales_Orders"  # Corrected module name
+    "Sales_Orders": "https://www.zohoapis.com/crm/v2/Sales_Orders",
+    "Products": "https://www.zohoapis.com/crm/v2/Products"
 }
 
 def clean_value(value):
@@ -157,7 +158,6 @@ def fetch_orders_data(conn, cur, headers):
 
                 so_number = clean_value(record.get("SO_Number"))
                 merchant_number = clean_value(record.get("Merchant_Number"))
-                merchant_number = clean_value(record.get("Merchant_Number"))
                 tech_setup_order_options = clean_value(record.get("Tech_Setup_Order_Options"))
                 communication_type = clean_value(record.get("Communication_Type"))
                 wireless_carrier = clean_value(record.get("Wireless_Carrier"))
@@ -165,13 +165,21 @@ def fetch_orders_data(conn, cur, headers):
                 terminal_id = clean_value(record.get("Terminal_ID"))
                 outside_agents = clean_value(record.get("Outside_Agents"))
                 status = clean_value(record.get("Status"))
+                est_equip_due_date = clean_value(record.get("Est_equip_due_date"))
                 equipment_received_date = clean_value(record.get("Equipment_Received_Date"))
+                tracking_number = clean_value(record.get("Tracking_Number"))
+                tracking_number2 = clean_value(record.get("Tracking_Number2"))
+                purchase_settled = clean_value(record.get("Purchase_Settled"))
+                date_shipped = clean_value(record.get("Date_Shipped"))
+                location = clean_value(record.get("Location"))
+                subject = clean_value(record.get("Subject"))
+                product_s_n = clean_value(record.get("Product_S_N"))
 
                 # ✅ Insert into zoho_orders_table
                 if outside_agents:
                     cur.execute("""
-                        INSERT INTO zoho_orders_table (order_id, so_number, merchant_number, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agents, status, equipment_received_date)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO zoho_orders_table (order_id, so_number, merchant_number, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agents, status, est_equip_due_date, equipment_received_date, tracking_number, tracking_number2, purchase_settled, date_shipped, location, subject, product_s_n)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (so_number) DO UPDATE SET
                             merchant_number = EXCLUDED.merchant_number,
                             tech_setup_order_options = EXCLUDED.tech_setup_order_options,
@@ -181,8 +189,16 @@ def fetch_orders_data(conn, cur, headers):
                             terminal_id = EXCLUDED.terminal_id,
                             outside_agents = EXCLUDED.outside_agents,
                             status = EXCLUDED.status,
-                            equipment_received_date = EXCLUDED.equipment_received_date;
-                    """, (order_id, so_number, merchant_number, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agents, status, equipment_received_date))
+                            est_equip_due_date = EXCLUDED.est_equip_due_date,
+                            equipment_received_date = EXCLUDED.equipment_received_date,
+                            tracking_number = EXCLUDED.tracking_number,
+                            tracking_number2 = EXCLUDED.tracking_number2,
+                            purchase_settled = EXCLUDED.purchase_settled,
+                            date_shipped = EXCLUDED.date_shipped,
+                            location = EXCLUDED.location,
+                            subject = EXCLUDED.subject,
+                            product_s_n = EXCLUDED.product_s_n;
+                    """, (order_id, so_number, merchant_number, tech_setup_order_options, communication_type, wireless_carrier, terminal_detail, terminal_id, outside_agents, status, est_equip_due_date, equipment_received_date, tracking_number, tracking_number2, purchase_settled, date_shipped, location, subject, product_s_n))
 
             conn.commit()
             print(f"📢 {module} - Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
@@ -193,6 +209,62 @@ def fetch_orders_data(conn, cur, headers):
             break
 
     print(f"✅ Total {module} records inserted: {total_records}")
+
+def fetch_products_data(conn, cur, headers):
+    """Fetch and insert data for the Products module with unique product_code."""
+    API_URL = API_ENDPOINTS["Products"]
+    page = 1
+    total_records = 0
+    module = "Products"
+
+    print(f"\n📢 Fetching data from {module}...\n")
+
+    # Retrieve the last used product_code to continue counting
+    cur.execute("SELECT MAX(product_code) FROM zoho_products_table;")
+    last_product_id = cur.fetchone()[0]
+    last_product_id = last_product_id if last_product_id else 0  # Start from 0 if empty
+
+    while True:
+        response = requests.get(f"{API_URL}?page={page}&per_page=200", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            records = data.get("data", [])
+            total_records += len(records)
+
+            if not records:
+                break  # No more records, stop fetching
+
+            for record in records:
+                last_product_id += 1  # Increment product_code counter
+                product_id = last_product_id  # Assign new unique ID
+
+                product_code = clean_value(record.get("Product_Code"))
+                location = clean_value(record.get("Location"))
+                assigned = clean_value(record.get("Assigned"))
+                product_name = clean_value(record.get("Product_Name"))
+
+                # ✅ Insert into zoho_orders_table
+                if product_code:
+                    cur.execute("""
+                        INSERT INTO zoho_products_table (product_id, product_code, location, assigned, product_name)
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON CONFLICT (product_code) DO UPDATE SET
+                            location = EXCLUDED.location,
+                            assigned = EXCLUDED.assigned,
+                            product_name = EXCLUDED.product_name;
+                    """, (product_id, product_code, location, assigned, product_name))
+
+            conn.commit()
+            print(f"📢 {module} - Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
+
+            page += 1
+        else:
+            print("✅ All data has been retrieved successfully. No more records to fetch.")
+            break
+
+    print(f"✅ Total {module} records inserted: {total_records}")
+
 
 def fetch_and_store_data():
     """Main function to fetch data for Accounts and Sales_Orders separately."""
@@ -209,6 +281,9 @@ def fetch_and_store_data():
     conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
     cur = conn.cursor()
     
+    # ✅ Fetch and store Products data
+    fetch_products_data(conn, cur, headers)
+
     # ✅ Fetch and store Orders data
     fetch_orders_data(conn, cur, headers)
 

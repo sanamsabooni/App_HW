@@ -1,47 +1,124 @@
-'''
-This script contains unit tests for the Database class.
-It tests the following functionalities:
-1. Establishing a database connection.
-2. Inserting data into a test table.
-3. Fetching the inserted data to verify correctness.
-4. Cleaning up by dropping the test table after execution.
-'''
-
-import unittest
-from database import Database
-
-class TestDatabase(unittest.TestCase):
-    """Unit tests for the Database class."""
+# Equipment report Query
+equipment_report = load_data_from_db("""
+    WITH OrderProcessing AS (
+        SELECT 
+            order_id, 
+            so_number, 
+            merchant_number, 
+            tech_setup_order_options, 
+            communication_type, 
+            wireless_carrier, 
+            terminal_detail, 
+            terminal_id, 
+            outside_agents, 
+            status, 
+            equipment_received_date,
+            
+            -- Initialize fee-related counters
+            0 AS g, 0 AS s, 0 AS c, 0 AS wf, 0 AS w, 0 AS v,
+            
+            -- Apply the conditions based on tech_setup_order_options
+            CASE 
+                WHEN LOWER(tech_setup_order_options) <> 'swap_replacement' THEN 
+                    CASE 
+                        WHEN LOWER(communication_type) = 'gateway' THEN 1 ELSE 0 END
+            END AS g,
+            
+            CASE 
+                WHEN LOWER(tech_setup_order_options) <> 'swap_replacement' THEN 
+                    CASE 
+                        WHEN LOWER(communication_type) = 'wireless' THEN 1 ELSE 0 END
+            END AS w,
+            
+            CASE 
+                WHEN LOWER(tech_setup_order_options) <> 'swap_replacement' THEN 
+                    CASE 
+                        WHEN LOWER(communication_type) = 'wifi' THEN 1 ELSE 0 END
+            END AS wf,
+            
+            CASE 
+                WHEN LOWER(tech_setup_order_options) <> 'swap_replacement' AND 
+                     LOWER(communication_type) = 'wireless' AND wireless_carrier IS NOT NULL AND 
+                     wireless_carrier <> 'missing_simcard' THEN 1 ELSE 0 
+            END AS s,
+            
+            CASE 
+                WHEN LOWER(tech_setup_order_options) <> 'swap_replacement' AND 
+                     LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') THEN 1 ELSE 0
+            END AS v
+            
+        FROM zoho_orders_table
+    )
     
-    def setUp(self):
-        """Set up a test database connection."""
-        self.db = Database()
-    
-    def test_connection(self):
-        """Test if database connection is established."""
-        self.assertIsNotNone(self.db.conn)
-        self.assertIsNotNone(self.db.cursor)
-    
-    def test_insert_and_fetch(self):
-        """Test inserting and fetching data from the database."""
-        self.db.execute_query("""
-            CREATE TABLE IF NOT EXISTS test (
-                id SERIAL PRIMARY KEY,
-                name TEXT
-            );
-        ""
-        )
+    SELECT 
+        order_id, 
+        so_number, 
+        merchant_number, 
+        tech_setup_order_options, 
+        communication_type, 
+        wireless_carrier, 
+        terminal_detail, 
+        terminal_id, 
+        outside_agents, 
+        status, 
+        equipment_received_date,
         
-        self.db.execute_query("INSERT INTO test (name) VALUES (%s);", ("Sample Name",))
-        result = self.db.fetch_data("SELECT name FROM test WHERE name = %s;", ("Sample Name",))
+        SUM(g) AS "Terminal/Gateway",
+        SUM(v) AS "Valor Count"
         
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0][0], "Sample Name")
-    
-    def tearDown(self):
-        """Clean up after tests."""
-        self.db.execute_query("DROP TABLE IF EXISTS test;")
-        self.db.close_connection()
+    FROM OrderProcessing
+    GROUP BY order_id, so_number, merchant_number, tech_setup_order_options, communication_type, 
+             wireless_carrier, terminal_detail, terminal_id, outside_agents, status, equipment_received_date;
+""")
 
-if __name__ == "__main__":
-    unittest.main()
+
+# Load the Equipment Report Pivot Table
+equipment_pivot_report = load_data_from_db("""
+    WITH OrderProcessing AS (
+        SELECT 
+            merchant_number,
+            
+            SUM(
+                CASE WHEN LOWER(tech_setup_order_options) = 'replacement' THEN
+                    CASE 
+                        WHEN LOWER(communication_type) = 'wireless' THEN -1 
+                        WHEN LOWER(communication_type) = 'gateway' THEN -1 
+                        WHEN LOWER(communication_type) = 'wifi' THEN -1 
+                        WHEN LOWER(communication_type) = 'wireless' AND wireless_carrier IS NOT NULL AND wireless_carrier <> 'missing_simcard' THEN -1 
+                        ELSE 0 
+                    END
+                ELSE w END
+            ) AS total_wireless,
+            
+            SUM(
+                CASE WHEN LOWER(tech_setup_order_options) = 'replacement' THEN
+                    CASE 
+                        WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') THEN -1 ELSE 0 
+                    END
+                ELSE v END
+            ) AS total_valor,
+            
+            SUM(
+                CASE WHEN w > 0 THEN w * 10 ELSE 0 END +
+                CASE WHEN wf > 0 AND s > 0 THEN s * 10 ELSE 0 END +
+                CASE WHEN v > 0 THEN 5 + CASE WHEN v > 1 THEN (v - 1) * 2 ELSE 0 END ELSE 0 END
+            ) AS total_fee
+    
+        FROM zoho_orders_table
+        WHERE LOWER(status) = 'completed'
+        GROUP BY merchant_number
+        HAVING 
+            SUM(
+                CASE 
+                    WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+                    THEN 1 ELSE 0 
+                END
+            ) > 0 
+            OR 
+            SUM(
+                CASE 
+                    WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
+                    THEN 1 ELSE 0 
+                END
+            ) > 0;
+""")

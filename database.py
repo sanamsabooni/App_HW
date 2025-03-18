@@ -38,6 +38,7 @@ def recreate_tables():
                 DROP TABLE IF EXISTS agents CASCADE;
                 DROP TABLE IF EXISTS merchants CASCADE;
                 DROP TABLE IF EXISTS zoho_orders_table CASCADE;
+                DROP TABLE IF EXISTS zoho_products_table CASCADE;
                 """
 
                 create_zoho_accounts_table_sql = """
@@ -100,9 +101,28 @@ def recreate_tables():
                     terminal_id TEXT,
                     outside_agents TEXT,
                     status TEXT, 
-                    equipment_received_date DATE
+                    est_equip_due_date Date,
+                    equipment_received_date DATE,
+                    tracking_number TEXT,
+                    tracking_number2 TEXT,
+                    purchase_settled DATE,
+                    date_shipped DATE,
+                    location TEXT,
+                    subject TEXT,
+                    product_s_n TEXT
                 );
                 """
+
+                create_zoho_products_table_sql = """
+                CREATE TABLE zoho_products_table (
+                    product_id SERIAL PRIMARY KEY,
+                    product_code TEXT UNIQUE NOT NULL,
+                    location TEXT,
+                    assigned BOOLEAN,
+                    product_name TEXT
+                );
+                """
+
 
                 # Execute SQL statements
                 cur.execute(drop_tables_sql)
@@ -110,6 +130,7 @@ def recreate_tables():
                 cur.execute(create_agents_table_sql)
                 cur.execute(create_merchants_table_sql)
                 cur.execute(create_zoho_orders_table_sql)
+                cur.execute(create_zoho_products_table_sql)
 
                 print("✅ Tables dropped and recreated successfully.")
 

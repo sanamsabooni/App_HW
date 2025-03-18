@@ -48,6 +48,8 @@ tables_query = """
     UNION ALL 
     SELECT 'Sales Orders' AS table_name, COUNT(*) AS row_count FROM zoho_orders_table
     UNION ALL 
+    SELECT 'Products' AS table_name, COUNT(*) AS row_count FROM zoho_products_table
+    UNION ALL 
     SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents 
     UNION ALL 
     SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants;
@@ -62,6 +64,8 @@ accounts_full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
 # Orders Full Data Query
 orders_full_data = load_data_from_db("SELECT * FROM zoho_orders_table;")
 
+# Products Full Data Query
+products_full_data = load_data_from_db("SELECT * FROM zoho_products_table;")
 
 # Agents & Merchants Queries
 agents_data = load_data_from_db("SELECT partner_name, office_code, office_code_2, split, split_2, pci_fee FROM agents;")
@@ -158,7 +162,18 @@ equipment_report = load_data_from_db("""
         terminal_id, 
         outside_agents, 
         status, 
+        est_equip_due_date,
         equipment_received_date,
+        tracking_number,
+        tracking_number2,                             
+        purchase_settled,
+        date_shipped,
+        location,
+        subject,
+        product_s_n,
+        
+        -- Initialize fee-related counters
+        0 AS g, 0 AS s, 0 AS c, 0 AS wf, 0 AS w, 0 AS v,
 
         -- Count occurrences of specific communication types
         (CASE 
@@ -214,7 +229,6 @@ equipment_pivot_report = load_data_from_db("""
 """)
 
 
-
 # Display Selected Page
 if page == "Count Tables":
     st.header("📊 Table Counts")
@@ -234,6 +248,13 @@ elif page == "Orders Full Data":
     st.header("📦 Orders Full Data")
     if orders_full_data is not None:
         st.dataframe(orders_full_data)
+    else:
+        st.warning("No data available. Run the report script first.")  
+
+elif page == "Products Full Data":
+    st.header("🔌 Products Full Data")
+    if products_full_data is not None:
+        st.dataframe(products_full_data)
     else:
         st.warning("No data available. Run the report script first.")  
 
