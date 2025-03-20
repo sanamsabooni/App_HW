@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from utils.db_utils import get_db_connection  # Ensure this function is correctly implemented
+import matplotlib.pyplot as plt
+from visualization import show_visualization  # Import visualization for Product Locations
 
 # Page Configuration
 st.set_page_config(page_title="HubWallet Reports", layout="wide")
@@ -22,7 +24,7 @@ st.markdown("\n\n")  # Extra spacing
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants"])
+page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants", "Product Locations"])
 
 # Database Connection
 engine = get_db_connection()  # Ensure this function returns a valid SQLAlchemy engine
@@ -59,6 +61,19 @@ count_tables = load_data_from_db(tables_query)
 
 # Accounts Full Data Query
 accounts_full_data = load_data_from_db("SELECT * FROM zoho_accounts_table;")
+
+
+count_tables = load_data_from_db("""
+    SELECT 'zoho_accounts_table' AS table_name, COUNT(*) AS row_count FROM zoho_accounts_table
+    UNION ALL 
+    SELECT 'Sales Orders' AS table_name, COUNT(*) AS row_count FROM zoho_orders_table
+    UNION ALL 
+    SELECT 'Products' AS table_name, COUNT(*) AS row_count FROM zoho_products_table
+    UNION ALL 
+    SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents 
+    UNION ALL 
+    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants;
+""")
 
 
 # Orders Full Data Query
@@ -229,6 +244,22 @@ equipment_pivot_report = load_data_from_db("""
 """)
 
 
+# Function to Fetch Product Location Data
+def fetch_product_locations():
+    query = """
+        SELECT location, COUNT(*) as count 
+        FROM products 
+        WHERE location IS NOT NULL 
+        GROUP BY location 
+        ORDER BY count DESC
+    """
+    with engine.connect() as conn:
+        return pd.read_sql(query, conn)
+    
+    
+
+
+
 # Display Selected Page
 if page == "Count Tables":
     st.header("📊 Table Counts")
@@ -295,6 +326,11 @@ elif page == "Equipment Report":
         st.dataframe(equipment_pivot_report)
     else:
         st.warning("No data available for pivot table.")
+
+# Visualization for Product Locations
+elif page == "Product Locations":
+    show_visualization()  # Call the visualization page to display pie chart
+
 
 # Refresh Button
 if st.button("🔄 Refresh Data"):

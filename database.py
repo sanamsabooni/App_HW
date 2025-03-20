@@ -117,6 +117,7 @@ def recreate_tables():
                 CREATE TABLE zoho_products_table (
                     product_id SERIAL PRIMARY KEY,
                     product_code TEXT UNIQUE NOT NULL,
+                    merchant_number TEXT,
                     location TEXT,
                     assigned BOOLEAN,
                     product_name TEXT

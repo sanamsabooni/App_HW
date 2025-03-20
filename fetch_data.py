@@ -240,6 +240,7 @@ def fetch_products_data(conn, cur, headers):
                 product_id = last_product_id  # Assign new unique ID
 
                 product_code = clean_value(record.get("Product_Code"))
+                merchant_number = clean_value(record.get("Merchant_Number"))
                 location = clean_value(record.get("Location"))
                 assigned = clean_value(record.get("Assigned"))
                 product_name = clean_value(record.get("Product_Name"))
@@ -247,13 +248,14 @@ def fetch_products_data(conn, cur, headers):
                 # ✅ Insert into zoho_orders_table
                 if product_code:
                     cur.execute("""
-                        INSERT INTO zoho_products_table (product_id, product_code, location, assigned, product_name)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO zoho_products_table (product_id, product_code, merchant_number, location, assigned, product_name)
+                        VALUES (%s, %s, %s, %s, %s, %s)
                         ON CONFLICT (product_code) DO UPDATE SET
+                            merchant_number = EXCLUDED.merchant_number,
                             location = EXCLUDED.location,
                             assigned = EXCLUDED.assigned,
                             product_name = EXCLUDED.product_name;
-                    """, (product_id, product_code, location, assigned, product_name))
+                    """, (product_id, product_code, merchant_number, location, assigned, product_name))
 
             conn.commit()
             print(f"📢 {module} - Page {page}: Inserted {len(records)} records. Total so far: {total_records}")
