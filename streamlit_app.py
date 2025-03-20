@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from utils.db_utils import get_db_connection  # Ensure this function is correctly implemented
 import matplotlib.pyplot as plt
-from visualization import show_visualization  # Import visualization for Product Locations
+import visualization  # Import visualization for HW Visualization
 
 # Page Configuration
 st.set_page_config(page_title="HubWallet Reports", layout="wide")
@@ -24,7 +24,24 @@ st.markdown("\n\n")  # Extra spacing
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants", "Product Locations"])
+page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants", "HW Visualization"])
+
+# Sub-navigation for HW Visualization
+if page == "HW Visualization":
+    sub_page = st.sidebar.radio("Select a Visualization", ["Product Locations", "Active Agents", "Test"])
+    
+    if sub_page == "Product Locations":
+        st.header("📍 Product Location Distribution")
+        product_locations_data = visualization.show_visualization()
+    
+    elif sub_page == "Active Agents":
+        st.header("📍 Active Agents")
+        product_locations_data = visualization.show_visualization()
+        
+    elif sub_page == "Test":
+        st.header("📍 Test")
+        product_locations_data = visualization.show_visualization()
+    
 
 # Database Connection
 engine = get_db_connection()  # Ensure this function returns a valid SQLAlchemy engine
@@ -327,13 +344,15 @@ elif page == "Equipment Report":
     else:
         st.warning("No data available for pivot table.")
 
-# Visualization for Product Locations
-elif page == "Product Locations":
-    show_visualization()  # Call the visualization page to display pie chart
+# Visualization for HW Visualization
+elif page == "HW Visualization":
+    if page == "HW Visualization":
+        st.header("📍 Product Location Distribution")
+        product_locations_data = show_visualization()
 
 
 # Refresh Button
-if st.button("🔄 Refresh Data"):
+if st.button("🔄 Refresh Data"):    
     st.cache_data.clear()
     st.experimental_rerun()
 
