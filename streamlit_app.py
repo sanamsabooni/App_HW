@@ -28,19 +28,19 @@ page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders 
 
 # Sub-navigation for HW Visualization
 if page == "HW Visualization":
-    sub_page = st.sidebar.radio("Select a Visualization", ["Product Locations", "Active Agents", "Test"])
+    sub_page = st.sidebar.radio("Select a Visualization", ["Product Locations", "Active Agents", "Available Product"])
     
     if sub_page == "Product Locations":
         st.header("📍 Product Location Distribution")
-        product_locations_data = visualization.show_visualization()
+        product_locations_data = visualization.show_visualization(sub_page)
     
     elif sub_page == "Active Agents":
-        st.header("📍 Active Agents")
-        product_locations_data = visualization.show_visualization()
+        st.header("🤝 Active Agents")
+        product_locations_data = visualization.show_visualization(sub_page)
         
-    elif sub_page == "Test":
-        st.header("📍 Test")
-        product_locations_data = visualization.show_visualization()
+    elif sub_page == "Available Product":
+        st.header("📤 Available Product")
+        product_locations_data = visualization.show_visualization(sub_page)
     
 
 # Database Connection
@@ -170,11 +170,12 @@ pci_report = load_data_from_db("""
                                 END, 0), 2)) * 0.15, 2)
         END AS max_share
 
-    FROM Merchants m
-    LEFT JOIN Agents a
-    ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
-    OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
-    WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';
+    FROM merchants m
+    LEFT JOIN agents a
+        ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
+        OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
+    WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
+    AND m.account_status = 'Approved';
 """)
 # Remove pci_difference column before displaying
 if pci_report is not None:
@@ -204,8 +205,6 @@ equipment_report = load_data_from_db("""
         subject,
         product_s_n,
         
-        -- Initialize fee-related counters
-        0 AS g, 0 AS s, 0 AS c, 0 AS wf, 0 AS w, 0 AS v,
 
         -- Count occurrences of specific communication types
         (CASE 
@@ -215,7 +214,7 @@ equipment_report = load_data_from_db("""
 
         -- Count occurrences of specific terminal details
         (CASE 
-            WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
+            WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
             THEN 1 ELSE 0 
         END) AS "Valor Count"
 
@@ -226,39 +225,127 @@ equipment_report = load_data_from_db("""
 # Load the Equipment Report Pivot Table
 equipment_pivot_report = load_data_from_db("""
     SELECT 
-        merchant_number,
-        SUM(
-            CASE 
-                WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
-                THEN 1 ELSE 0 
-            END
-        ) AS "Total Terminal/Gateway",
+        sub.merchant_number,
+        m.outside_agents,
+        sub."Terminal/Gateway",
+        sub."Valor Count",
         
-        SUM(
-            CASE 
-                WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
-                THEN 1 ELSE 0 
+        CAST(sub."Terminal/Gateway" * 10 AS DECIMAL(10,2)) AS "Terminal/Gateway Fee",
+
+        CASE
+            WHEN sub."Valor Count" = 1 THEN 5
+            WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+            ELSE 0
+        END AS "Valor Fee",
+
+        CAST(
+            (sub."Terminal/Gateway" * 10) + 
+            CASE
+                WHEN sub."Valor Count" = 1 THEN 5
+                WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                ELSE 0
             END
-        ) AS "Total Valor Count"
-        
-    FROM zoho_orders_table
-    WHERE LOWER(status) = 'completed'
-    GROUP BY merchant_number
-    HAVING 
-        SUM(
-            CASE 
-                WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
-                THEN 1 ELSE 0 
-            END
-        ) > 0 
-        OR 
-        SUM(
-            CASE 
-                WHEN LOWER(terminal_detail) IN ('vp550', 'vl300', 'vl110', 'vl100 pro') 
-                THEN 1 ELSE 0 
-            END
-        ) > 0;
+        AS DECIMAL(10,2)) AS "Equipments Fee"
+
+    FROM (
+        SELECT 
+            merchant_number,
+            
+            SUM(
+                CASE 
+                    WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+                    THEN 1 ELSE 0 
+                END
+            ) AS "Terminal/Gateway",
+            
+            SUM(
+                CASE 
+                    WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
+                    THEN 1 ELSE 0 
+                END
+            ) AS "Valor Count"
+
+        FROM zoho_orders_table
+        WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
+        GROUP BY merchant_number
+    ) AS sub
+
+    LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
+
+    ORDER BY "Terminal/Gateway" DESC;
 """)
+
+# Load the Equipment Report for Agents
+equipment_agent_summary = load_data_from_db("""
+    SELECT 
+        sub.outside_agents,
+        SUM(sub."Equipments Fee") AS "Total Equipments Fee"
+    FROM (
+
+        SELECT 
+            m.outside_agents,
+            
+            -- Count terminal/gateway
+            SUM(
+                CASE 
+                    WHEN LOWER(o.communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+                    THEN 1 ELSE 0 
+                END
+            ) AS "Terminal/Gateway",
+
+            -- Count valor terminals
+            SUM(
+                CASE 
+                    WHEN LOWER(o.terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
+                    THEN 1 ELSE 0 
+                END
+            ) AS "Valor Count",
+
+            -- Calculate total equipment fee for this merchant
+            CAST(
+                (SUM(
+                    CASE 
+                        WHEN LOWER(o.communication_type) IN ('wireless - gprs', 'wireless - cdma', 'gateway') 
+                        THEN 1 ELSE 0 
+                    END
+                ) * 10) +
+                CASE
+                    WHEN SUM(
+                        CASE 
+                            WHEN LOWER(o.terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
+                            THEN 1 ELSE 0 
+                        END
+                    ) = 1 THEN 5
+                    WHEN SUM(
+                        CASE 
+                            WHEN LOWER(o.terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
+                            THEN 1 ELSE 0 
+                        END
+                    ) > 1 THEN 5 + ((SUM(
+                        CASE 
+                            WHEN LOWER(o.terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
+                            THEN 1 ELSE 0 
+                        END
+                    ) - 1) * 2)
+                    ELSE 0
+                END
+            AS DECIMAL(10,2)) AS "Equipments Fee"
+
+        FROM zoho_orders_table o
+        LEFT JOIN merchants m ON o.merchant_number = m.merchant_number
+
+        WHERE o.merchant_number IS NOT NULL AND TRIM(o.merchant_number) <> ''
+        GROUP BY m.merchant_number, m.outside_agents
+
+    ) AS sub
+    WHERE sub.outside_agents IS NOT NULL 
+      AND TRIM(sub.outside_agents) <> ''
+      AND sub."Equipments Fee" > 0
+    GROUP BY sub.outside_agents
+    ORDER BY "Total Equipments Fee" DESC;
+""")
+
+
 
 
 # Function to Fetch Product Location Data
@@ -293,14 +380,14 @@ elif page == "Accounts Full Data":
         st.warning("No data available. Run the report script first.")
 
 elif page == "Orders Full Data":
-    st.header("📦 Orders Full Data")
+    st.header("🗃️ Orders Full Data")
     if orders_full_data is not None:
         st.dataframe(orders_full_data)
     else:
         st.warning("No data available. Run the report script first.")  
 
 elif page == "Products Full Data":
-    st.header("🔌 Products Full Data")
+    st.header("📦 Products Full Data")
     if products_full_data is not None:
         st.dataframe(products_full_data)
     else:
@@ -344,12 +431,15 @@ elif page == "Equipment Report":
     else:
         st.warning("No data available for pivot table.")
 
-# Visualization for HW Visualization
-elif page == "HW Visualization":
-    if page == "HW Visualization":
-        st.header("📍 Product Location Distribution")
-        product_locations_data = show_visualization()
+    # Add a separator
+    st.markdown("---")
 
+    # Display Pivot Table Below
+    st.header("📊 Equipment Fee for Agents (Pivot Table)")
+    if equipment_agent_summary is not None:
+        st.dataframe(equipment_agent_summary)
+    else:
+        st.warning("No data available for pivot table.")
 
 # Refresh Button
 if st.button("🔄 Refresh Data"):    
