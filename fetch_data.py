@@ -62,12 +62,18 @@ def fetch_accounts_data(conn, cur, headers):
                 pci_amnt = clean_value(account.get("PCI_Amnt"))    
                 account_name = clean_value(account.get("Account_Name"))
                 date_approved = clean_value(account.get("Date_Approved"))
+                mpa_wireless_fee = clean_value(account.get("MPA_Wireless_Fee"))
+                mpa_valor_portal_access = clean_value(account.get("MPA_Valor_Portal_Access"))
+                mpa_valor_add_on_terminal = clean_value(account.get("MPA_Valor_Portal_Access_on_Add_on_Terminal"))
+                mpa_valor_virtual_terminal = clean_value(account.get("MPA_Valor_Virtual_Terminal"))
+                mpa_valor_ecommerce = clean_value(account.get("MPA_Valor_eCommerce"))
+
 
                 # ✅ Insert into zoho_accounts_table (All Records)
                 if split or (merchant_number and outside_agents):
                     cur.execute("""
-                        INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_id) DO UPDATE SET
                             partner_name = EXCLUDED.partner_name, 
                             office_code = EXCLUDED.office_code, 
@@ -81,8 +87,13 @@ def fetch_accounts_data(conn, cur, headers):
                             outside_agents = EXCLUDED.outside_agents,
                             pci_amnt = EXCLUDED.pci_amnt, 
                             account_name = EXCLUDED.account_name, 
-                            date_approved = EXCLUDED.date_approved;
-                    """, (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved))
+                            date_approved = EXCLUDED.date_approved,
+                            mpa_wireless_fee = EXCLUDED.mpa_wireless_fee,
+                            mpa_valor_portal_access = EXCLUDED.mpa_valor_portal_access,
+                            mpa_valor_add_on_terminal = EXCLUDED.mpa_valor_add_on_terminal,
+                            mpa_valor_virtual_terminal = EXCLUDED.mpa_valor_virtual_terminal,
+                            mpa_valor_ecommerce = EXCLUDED.mpa_valor_ecommerce;
+                    """, (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce))
 
                 # ✅ Insert into Agents Table
                 if split:
@@ -100,12 +111,11 @@ def fetch_accounts_data(conn, cur, headers):
                     """, (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, account_name))
 
 
-
                 # ✅ Insert into Merchants Table
                 if merchant_number and outside_agents:
                     cur.execute("""
-                        INSERT INTO merchants (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO merchants (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_id) DO UPDATE 
                         SET merchant_number = EXCLUDED.merchant_number,
                             account_name = EXCLUDED.account_name,
@@ -113,8 +123,13 @@ def fetch_accounts_data(conn, cur, headers):
                             sales_id = EXCLUDED.sales_id,  
                             outside_agents = EXCLUDED.outside_agents,
                             pci_amnt = EXCLUDED.pci_amnt,
-                            date_approved = EXCLUDED.date_approved;
-                    """, (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved))
+                            date_approved = EXCLUDED.date_approved,
+                            mpa_wireless_fee = EXCLUDED.mpa_wireless_fee,
+                            mpa_valor_portal_access = EXCLUDED.mpa_valor_portal_access,
+                            mpa_valor_add_on_terminal = EXCLUDED.mpa_valor_add_on_terminal,
+                            mpa_valor_virtual_terminal = EXCLUDED.mpa_valor_virtual_terminal,
+                            mpa_valor_ecommerce = EXCLUDED.mpa_valor_ecommerce;
+                    """, (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce))
 
 
             conn.commit()
@@ -246,7 +261,7 @@ def fetch_products_data(conn, cur, headers):
                 product_name = clean_value(record.get("Product_Name"))
 
                 # ✅ Insert into zoho_orders_table
-                if product_code:
+                if location == "Merchant Location":
                     cur.execute("""
                         INSERT INTO zoho_products_table (product_id, product_code, merchant_number, location, assigned, product_name)
                         VALUES (%s, %s, %s, %s, %s, %s)

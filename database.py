@@ -58,7 +58,12 @@ def recreate_tables():
                     pci_amnt TEXT,
                     account_name TEXT,
                     date_approved DATE,
-                    account_status TEXT
+                    account_status TEXT,
+                    mpa_wireless_fee TEXT,
+                    mpa_valor_portal_access TEXT,
+                    mpa_Valor_add_on_terminal TEXT,
+                    mpa_valor_virtual_terminal TEXT,
+                    mpa_valor_ecommerce TEXT
                 );
                 """
 
@@ -86,7 +91,12 @@ def recreate_tables():
                     outside_agents TEXT,
                     pci_amnt TEXT,
                     date_approved DATE,
-                    account_status TEXT
+                    account_status TEXT,
+                    mpa_wireless_fee TEXT,
+                    mpa_valor_portal_access TEXT,
+                    mpa_Valor_add_on_terminal TEXT,
+                    mpa_valor_virtual_terminal TEXT,
+                    mpa_valor_ecommerce TEXT
                 );
                 """
 
