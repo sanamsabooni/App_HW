@@ -261,9 +261,21 @@ def fetch_products_data(conn, cur, headers):
                 product_name = clean_value(record.get("Product_Name"))
 
                 # ✅ Insert into zoho_orders_table
+                if product_code:
+                    cur.execute("""
+                            INSERT INTO zoho_products_table (product_id, product_code, merchant_number, location, assigned, product_name)
+                            VALUES (%s, %s, %s, %s, %s, %s)
+                            ON CONFLICT (product_code) DO UPDATE SET
+                                merchant_number = EXCLUDED.merchant_number,
+                                location = EXCLUDED.location,
+                                assigned = EXCLUDED.assigned,
+                                product_name = EXCLUDED.product_name;
+                        """, (product_id, product_code, merchant_number, location, assigned, product_name))
+                
+                # ✅ Insert into zoho_orders_table
                 if location == "Merchant Location":
                     cur.execute("""
-                        INSERT INTO zoho_products_table (product_id, product_code, merchant_number, location, assigned, product_name)
+                        INSERT INTO products_at_merchants_table (product_id, product_code, merchant_number, location, assigned, product_name)
                         VALUES (%s, %s, %s, %s, %s, %s)
                         ON CONFLICT (product_code) DO UPDATE SET
                             merchant_number = EXCLUDED.merchant_number,

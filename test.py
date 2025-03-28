@@ -348,7 +348,7 @@ elif page == "Equipment Report":
 elif page == "HW Visualization":
     if page == "HW Visualization":
         st.header("📍 Product Location Distribution")
-        product_locations_data = show_visualization()
+        product_locations_data = visualization.show_visualization()
 
 
 # Refresh Button

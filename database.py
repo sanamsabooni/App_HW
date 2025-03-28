@@ -40,6 +40,7 @@ def recreate_tables():
                 DROP TABLE IF EXISTS merchants CASCADE;
                 DROP TABLE IF EXISTS zoho_orders_table CASCADE;
                 DROP TABLE IF EXISTS zoho_products_table CASCADE;
+                DROP TABLE IF EXISTS products_at_merchants_table CASCADE;
                 """
 
                 create_zoho_accounts_table_sql = """
@@ -135,6 +136,17 @@ def recreate_tables():
                 );
                 """
 
+                create_products_at_merchants_table_sql = """
+                CREATE TABLE products_at_merchants_table (
+                    product_id SERIAL PRIMARY KEY,
+                    product_code TEXT UNIQUE NOT NULL,
+                    merchant_number TEXT,
+                    location TEXT,
+                    assigned BOOLEAN,
+                    product_name TEXT
+                );
+                """
+
 
                 # Execute SQL statements
                 cur.execute(drop_tables_sql)
@@ -143,6 +155,7 @@ def recreate_tables():
                 cur.execute(create_merchants_table_sql)
                 cur.execute(create_zoho_orders_table_sql)
                 cur.execute(create_zoho_products_table_sql)
+                cur.execute(create_products_at_merchants_table_sql)
 
                 print("✅ Tables dropped and recreated successfully.")
 
