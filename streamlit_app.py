@@ -259,8 +259,60 @@ equipment_pivot_report = load_data_from_db("""
         m.mpa_valor_virtual_terminal,
         m.mpa_valor_ecommerce,
 
-        0 AS "Merchant Share"  -- ✅ Moved here to be the last column
+                                                                                      
+        -- ✅ Merchant Wireless Terminal Fee
+        CASE 
+            WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 THEN m.mpa_wireless_fee
+        END AS "Merchant Wireless Terminal Fee",
+                                                                              
+        -- ✅ Merchant Valor Fee
+        CASE 
+            WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 THEN m.mpa_valor_portal_access
+        END AS "Merchant Valor Fee",
+                                                                            
+        -- ✅ Merchant Second Valor Fee
+        CASE 
+            WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 THEN m.mpa_valor_add_on_terminal
+        END AS "Merchant second Valor Fee",                                        
+        
+        -- ✅ Merchant Gateway Fee
+        CASE 
+            WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+            THEN COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce)
+        END AS "Merchant Gateway Fee",
+                                           
 
+        -- ✅ Total Merchant Share
+        -- ✅ Total Merchant Share
+        CAST(
+            COALESCE(
+                CASE 
+                    WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
+                    THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
+                END, 0
+            ) +
+            COALESCE(
+                CASE 
+                    WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
+                    THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
+                END, 0
+            ) +
+            COALESCE(
+                CASE 
+                    WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
+                    THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
+                END, 0
+            ) +
+            COALESCE(
+                CASE 
+                    WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+                    THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
+                END, 0
+            )
+        AS DECIMAL(10,2)) AS "Total Merchant Share"
+
+                                  
+                                           
     FROM (
         SELECT 
             merchant_number,
@@ -274,7 +326,7 @@ equipment_pivot_report = load_data_from_db("""
             
             SUM(
                 CASE 
-                    WHEN LOWER(communication_type) IN ('gateway') 
+                    WHEN LOWER(communication_type) = 'gateway' 
                     THEN 1 ELSE 0 
                 END
             ) AS "Gateway Count",
@@ -285,17 +337,18 @@ equipment_pivot_report = load_data_from_db("""
                     THEN 1 ELSE 0 
                 END
             ) AS "Valor Count"
-
+       
         FROM zoho_orders_table
         WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
         GROUP BY merchant_number
     ) AS sub
+                                           
+    
 
     LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
 
     ORDER BY "Valor Count" DESC;
 """)
-
 
 
 # Load the Equipment Report for Agents
