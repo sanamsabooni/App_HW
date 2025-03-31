@@ -231,9 +231,8 @@ equipment_pivot_report = load_data_from_db("""
         sub."Terminal Count",
         sub."Gateway Count",
         sub."Valor Count",
-        
+
         CAST(sub."Terminal Count" * 10 AS DECIMAL(10,2)) AS "Terminal Fee",
-                                           
         CAST(sub."Gateway Count" * 10 AS DECIMAL(10,2)) AS "Gateway Fee",
 
         CASE
@@ -252,107 +251,88 @@ equipment_pivot_report = load_data_from_db("""
             END
         AS DECIMAL(10,2)) AS "Equipments Fee",
 
-        -- Added fields from merchants table
-        m.mpa_wireless_fee,
-        m.mpa_valor_portal_access,
-        m.mpa_valor_add_on_terminal,
-        m.mpa_valor_virtual_terminal,
-        m.mpa_valor_ecommerce,
+        -- Cast MPA fields early
+        CAST(m.mpa_wireless_fee AS NUMERIC) AS mpa_wireless_fee,
+        CAST(m.mpa_valor_portal_access AS NUMERIC) AS mpa_valor_portal_access,
+        CAST(m.mpa_valor_add_on_terminal AS NUMERIC) AS mpa_valor_add_on_terminal,
+        CAST(m.mpa_valor_virtual_terminal AS NUMERIC) AS mpa_valor_virtual_terminal,
+        CAST(m.mpa_valor_ecommerce AS NUMERIC) AS mpa_valor_ecommerce,
 
-        -- ✅ Merchant Wireless Terminal Fee
-        CASE 
-            WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 THEN m.mpa_wireless_fee
-        END AS "Merchant Wireless Terminal Fee",
-                                                                              
-        -- ✅ Merchant Valor Fee
-        CASE 
-            WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 THEN m.mpa_valor_portal_access
-        END AS "Merchant Valor Fee",
-                                                                            
-        -- ✅ Merchant Second Valor Fee
-        CASE 
-            WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 THEN m.mpa_valor_add_on_terminal
-        END AS "Merchant second Valor Fee",                                        
-        
-        -- ✅ Merchant Gateway Fee
-        CASE 
-            WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
-            THEN COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce)
-        END AS "Merchant Gateway Fee",
+        -- ✅ Merchant Fees
+        CASE WHEN sub."Terminal Count" > 0 THEN CAST(m.mpa_wireless_fee AS NUMERIC) END AS "Merchant Wireless Terminal Fee",
+        CASE WHEN sub."Valor Count" > 0 THEN CAST(m.mpa_valor_portal_access AS NUMERIC) END AS "Merchant Valor Fee",
+        CASE WHEN sub."Valor Count" > 1 THEN CAST(m.mpa_valor_add_on_terminal AS NUMERIC) END AS "Merchant second Valor Fee",
+        CASE WHEN sub."Gateway Count" > 0 THEN COALESCE(CAST(m.mpa_valor_virtual_terminal AS NUMERIC), CAST(m.mpa_valor_ecommerce AS NUMERIC)) END AS "Merchant Gateway Fee",
 
         -- ✅ Total Merchant Share
         CAST(
-            COALESCE(
-                CASE 
-                    WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
-                    THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
-                END, 0
-            ) +
-            COALESCE(
-                CASE 
-                    WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
-                    THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
-                END, 0
-            ) +
-            COALESCE(
-                CASE 
-                    WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
-                    THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
-                END, 0
-            ) +
-            COALESCE(
-                CASE 
-                    WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
-                    THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
-                END, 0
-            )
+            COALESCE(CASE WHEN sub."Terminal Count" > 0 THEN CAST(m.mpa_wireless_fee AS NUMERIC) END, 0) +
+            COALESCE(CASE WHEN sub."Valor Count" > 0 THEN CAST(m.mpa_valor_portal_access AS NUMERIC) END, 0) +
+            COALESCE(CASE WHEN sub."Valor Count" > 1 THEN CAST(m.mpa_valor_add_on_terminal AS NUMERIC) END, 0) +
+            COALESCE(CASE WHEN sub."Gateway Count" > 0 THEN COALESCE(CAST(m.mpa_valor_virtual_terminal AS NUMERIC), CAST(m.mpa_valor_ecommerce AS NUMERIC)) END, 0)
         AS DECIMAL(10,2)) AS "Total Merchant Share",
---#######################################################################
+
         -- ✅ Agent Share
         CAST(
-            (
-                -- Equipments Fee:
-                (sub."Terminal Count" * 10) + 
-                (sub."Gateway Count" * 10) +
-                CASE
-                    WHEN sub."Valor Count" = 1 THEN 5
-                    WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
-                    ELSE 0
-                END
-            )
-            -
-            (
-                -- Total Merchant Share:
-                COALESCE(
+            CASE 
+                WHEN (
+                    (sub."Terminal Count" * 10) + 
+                    (sub."Gateway Count" * 10) +
+                    CASE
+                        WHEN sub."Valor Count" = 1 THEN 5
+                        WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                        ELSE 0
+                    END
+                    -
+                    (
+                        COALESCE(CASE WHEN sub."Terminal Count" > 0 THEN CAST(m.mpa_wireless_fee AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Valor Count" > 0 THEN CAST(m.mpa_valor_portal_access AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Valor Count" > 1 THEN CAST(m.mpa_valor_add_on_terminal AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Gateway Count" > 0 THEN COALESCE(CAST(m.mpa_valor_virtual_terminal AS NUMERIC), CAST(m.mpa_valor_ecommerce AS NUMERIC)) END, 0)
+                    )
+                ) < 0
+                THEN (
+                    (
+                        (sub."Terminal Count" * 10) + 
+                        (sub."Gateway Count" * 10) +
+                        CASE
+                            WHEN sub."Valor Count" = 1 THEN 5
+                            WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                            ELSE 0
+                        END
+                    )
+                    -
+                    (
+                        COALESCE(CASE WHEN sub."Terminal Count" > 0 THEN CAST(m.mpa_wireless_fee AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Valor Count" > 0 THEN CAST(m.mpa_valor_portal_access AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Valor Count" > 1 THEN CAST(m.mpa_valor_add_on_terminal AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Gateway Count" > 0 THEN COALESCE(CAST(m.mpa_valor_virtual_terminal AS NUMERIC), CAST(m.mpa_valor_ecommerce AS NUMERIC)) END, 0)
+                    )
+                ) * COALESCE(
                     CASE 
-                        WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
-                        THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
-                    END, 0
-                ) +
-                COALESCE(
-                    CASE 
-                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
-                        THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
-                    END, 0
-                ) +
-                COALESCE(
-                    CASE 
-                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
-                        THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
-                    END, 0
-                ) +
-                COALESCE(
-                    CASE 
-                        WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
-                        THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
-                    END, 0
+                        WHEN m.sales_id = a.office_code THEN CAST(REGEXP_REPLACE(a.split, '[^0-9]', '', 'g') AS NUMERIC) / 100
+                        WHEN m.sales_id = a.office_code_2 THEN CAST(REGEXP_REPLACE(a.split_2, '[^0-9]', '', 'g') AS NUMERIC) / 100
+                        ELSE 1
+                    END, 1)
+                ELSE (
+                    (sub."Terminal Count" * 10) + 
+                    (sub."Gateway Count" * 10) +
+                    CASE
+                        WHEN sub."Valor Count" = 1 THEN 5
+                        WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                        ELSE 0
+                    END
+                    -
+                    (
+                        COALESCE(CASE WHEN sub."Terminal Count" > 0 THEN CAST(m.mpa_wireless_fee AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Valor Count" > 0 THEN CAST(m.mpa_valor_portal_access AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Valor Count" > 1 THEN CAST(m.mpa_valor_add_on_terminal AS NUMERIC) END, 0) +
+                        COALESCE(CASE WHEN sub."Gateway Count" > 0 THEN COALESCE(CAST(m.mpa_valor_virtual_terminal AS NUMERIC), CAST(m.mpa_valor_ecommerce AS NUMERIC)) END, 0)
+                    )
                 )
-            )
+            END
         AS DECIMAL(10,2)) AS "Agent Share"
 
-
-
-                                           
     FROM (
         SELECT 
             merchant_number,
@@ -363,14 +343,13 @@ equipment_pivot_report = load_data_from_db("""
         WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
         GROUP BY merchant_number
     ) AS sub
-                                           
-    
-
     LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
     LEFT JOIN agents a ON m.sales_id IN (a.office_code, a.office_code_2)
-                                           
     ORDER BY "Valor Count" DESC;
 """)
+
+
+
 
 # The Equipment Report for Agents
 equipment_agent_charges = load_data_from_db("""
