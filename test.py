@@ -357,3 +357,139 @@ if st.button("🔄 Refresh Data"):
     st.experimental_rerun()
 
 st.sidebar.success("Use the navigation to view different reports.")
+
+
+
+
+
+
+-- ✅ Agent Share
+        CAST(
+            CASE 
+                WHEN 
+                    (
+                        (sub."Terminal Count" * 10) + 
+                        (sub."Gateway Count" * 10) +
+                        CASE
+                            WHEN sub."Valor Count" = 1 THEN 5
+                            WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                            ELSE 0
+                        END
+                    )
+                    -
+                    (
+                        COALESCE(
+                            CASE 
+                                WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
+                                THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
+                            END, 0
+                        ) +
+                        COALESCE(
+                            CASE 
+                                WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
+                                THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
+                            END, 0
+                        ) +
+                        COALESCE(
+                            CASE 
+                                WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
+                                THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
+                            END, 0
+                        ) +
+                        COALESCE(
+                            CASE 
+                                WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+                                THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
+                            END, 0
+                        )
+                    ) < 0
+                THEN 
+                    (
+                        CAST(
+                            (sub."Terminal Count" * 10) + 
+                            (sub."Gateway Count" * 10) +
+                            CASE
+                                WHEN sub."Valor Count" = 1 THEN 5
+                                WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                                ELSE 0
+                            END
+                        AS DECIMAL(10,2))
+                        -
+                        (
+                            CAST(
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
+                                        THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
+                                    END, 0
+                                ) +
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
+                                        THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
+                                    END, 0
+                                ) +
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
+                                        THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
+                                    END, 0
+                                ) +
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+                                        THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
+                                    END, 0
+                                )
+                            AS DECIMAL(10,2))
+                        )
+                    )
+                    * COALESCE(
+                        CASE 
+                            WHEN m.sales_id = a.office_code THEN a.split
+                            WHEN m.sales_id = a.office_code_2 THEN a.split_2
+                        END, 1
+                    )
+                ELSE 
+                    (
+                        CAST(
+                            (sub."Terminal Count" * 10) + 
+                            (sub."Gateway Count" * 10) +
+                            CASE
+                                WHEN sub."Valor Count" = 1 THEN 5
+                                WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                                ELSE 0
+                            END
+                        AS DECIMAL(10,2))
+                        -
+                        (
+                            CAST(
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
+                                        THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
+                                    END, 0
+                                ) +
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
+                                        THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
+                                    END, 0
+                                ) +
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
+                                        THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
+                                    END, 0
+                                ) +
+                                COALESCE(
+                                    CASE 
+                                        WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+                                        THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
+                                    END, 0
+                                )
+                            AS DECIMAL(10,2))
+                        )
+                    )
+            END
+        AS DECIMAL(10,2)) AS "Agent Share"

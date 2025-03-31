@@ -223,7 +223,7 @@ equipment_report = load_data_from_db("""
 
 
 
-# Load the Equipment Report Pivot Table
+# The Equipment Report for Merchants
 equipment_pivot_report = load_data_from_db("""
     SELECT 
         sub.merchant_number,
@@ -259,7 +259,6 @@ equipment_pivot_report = load_data_from_db("""
         m.mpa_valor_virtual_terminal,
         m.mpa_valor_ecommerce,
 
-                                                                                      
         -- ✅ Merchant Wireless Terminal Fee
         CASE 
             WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 THEN m.mpa_wireless_fee
@@ -280,9 +279,7 @@ equipment_pivot_report = load_data_from_db("""
             WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
             THEN COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce)
         END AS "Merchant Gateway Fee",
-                                           
 
-        -- ✅ Total Merchant Share
         -- ✅ Total Merchant Share
         CAST(
             COALESCE(
@@ -309,35 +306,59 @@ equipment_pivot_report = load_data_from_db("""
                     THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
                 END, 0
             )
-        AS DECIMAL(10,2)) AS "Total Merchant Share"
+        AS DECIMAL(10,2)) AS "Total Merchant Share",
+--#######################################################################
+        -- ✅ Agent Share
+        CAST(
+            (
+                -- Equipments Fee:
+                (sub."Terminal Count" * 10) + 
+                (sub."Gateway Count" * 10) +
+                CASE
+                    WHEN sub."Valor Count" = 1 THEN 5
+                    WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                    ELSE 0
+                END
+            )
+            -
+            (
+                -- Total Merchant Share:
+                COALESCE(
+                    CASE 
+                        WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
+                        THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
+                    END, 0
+                ) +
+                COALESCE(
+                    CASE 
+                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
+                        THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
+                    END, 0
+                ) +
+                COALESCE(
+                    CASE 
+                        WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
+                        THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
+                    END, 0
+                ) +
+                COALESCE(
+                    CASE 
+                        WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+                        THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
+                    END, 0
+                )
+            )
+        AS DECIMAL(10,2)) AS "Agent Share"
 
-                                  
+
+
                                            
     FROM (
         SELECT 
             merchant_number,
-            
-            SUM(
-                CASE 
-                    WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma') 
-                    THEN 1 ELSE 0 
-                END
-            ) AS "Terminal Count",
-            
-            SUM(
-                CASE 
-                    WHEN LOWER(communication_type) = 'gateway' 
-                    THEN 1 ELSE 0 
-                END
-            ) AS "Gateway Count",
-                                           
-            SUM(
-                CASE 
-                    WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') 
-                    THEN 1 ELSE 0 
-                END
-            ) AS "Valor Count"
-       
+            SUM(CASE WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma') THEN 1 ELSE 0 END) AS "Terminal Count",
+            SUM(CASE WHEN LOWER(communication_type) = 'gateway' THEN 1 ELSE 0 END) AS "Gateway Count",
+            SUM(CASE WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') THEN 1 ELSE 0 END) AS "Valor Count"
         FROM zoho_orders_table
         WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
         GROUP BY merchant_number
@@ -346,9 +367,82 @@ equipment_pivot_report = load_data_from_db("""
     
 
     LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
-
+    LEFT JOIN agents a ON m.sales_id IN (a.office_code, a.office_code_2)
+                                           
     ORDER BY "Valor Count" DESC;
 """)
+
+# The Equipment Report for Agents
+equipment_agent_charges = load_data_from_db("""
+    WITH merchant_level_report AS (
+        SELECT 
+            m.outside_agents,
+            
+            CAST(
+                (
+                    (sub."Terminal Count" * 10) + 
+                    (sub."Gateway Count" * 10) +
+                    CASE
+                        WHEN sub."Valor Count" = 1 THEN 5
+                        WHEN sub."Valor Count" > 1 THEN 5 + ((sub."Valor Count" - 1) * 2)
+                        ELSE 0
+                    END
+                ) -
+                (
+                    COALESCE(
+                        CASE 
+                            WHEN CAST(sub."Terminal Count" AS DECIMAL(10,2)) > 0 
+                            THEN CAST(m.mpa_wireless_fee AS DECIMAL(10,2))
+                        END, 0
+                    ) +
+                    COALESCE(
+                        CASE 
+                            WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 0 
+                            THEN CAST(m.mpa_valor_portal_access AS DECIMAL(10,2))
+                        END, 0
+                    ) +
+                    COALESCE(
+                        CASE 
+                            WHEN CAST(sub."Valor Count" AS DECIMAL(10,2)) > 1 
+                            THEN CAST(m.mpa_valor_add_on_terminal AS DECIMAL(10,2))
+                        END, 0
+                    ) +
+                    COALESCE(
+                        CASE 
+                            WHEN CAST(sub."Gateway Count" AS DECIMAL(10,2)) > 0 
+                            THEN CAST(COALESCE(m.mpa_valor_virtual_terminal, m.mpa_valor_ecommerce) AS DECIMAL(10,2))
+                        END, 0
+                    )
+                )
+            AS DECIMAL(10,2)) AS agent_share_per_merchant
+
+        FROM (
+            SELECT 
+                merchant_number,
+                SUM(CASE WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma') THEN 1 ELSE 0 END) AS "Terminal Count",
+                SUM(CASE WHEN LOWER(communication_type) = 'gateway' THEN 1 ELSE 0 END) AS "Gateway Count",
+                SUM(CASE WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') THEN 1 ELSE 0 END) AS "Valor Count"
+            FROM zoho_orders_table
+            WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
+            GROUP BY merchant_number
+        ) AS sub
+        LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
+        WHERE m.outside_agents IS NOT NULL AND TRIM(m.outside_agents) <> ''
+    )
+
+    SELECT 
+        outside_agents AS "Agent",
+        SUM(agent_share_per_merchant) AS "Total Agent Share"
+    FROM merchant_level_report
+    GROUP BY outside_agents
+    ORDER BY "Total Agent Share" DESC;
+""")
+
+
+
+
+
+
 
 
 # Load the Equipment Report for Agents
