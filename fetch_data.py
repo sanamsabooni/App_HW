@@ -67,13 +67,20 @@ def fetch_accounts_data(conn, cur, headers):
                 mpa_valor_add_on_terminal = clean_value(account.get("MPA_Valor_Portal_Access_on_Add_on_Terminal"))
                 mpa_valor_virtual_terminal = clean_value(account.get("MPA_Valor_Virtual_Terminal"))
                 mpa_valor_ecommerce = clean_value(account.get("MPA_Valor_eCommerce"))
+                processor = clean_value(account.get("Processor"))
+                approved = clean_value(account.get("Approved"))
+                commission_amount = clean_value(account.get("Commission_Amount"))
+                commission_pay_date = clean_value(account.get("Commission_Pay_Date"))
+                paid = clean_value(account.get("Paid"))
+                clawback = clean_value(account.get("ClawBack"))
+                clawback_date = clean_value(account.get("ClawBack_Date"))
 
 
                 # ✅ Insert into zoho_accounts_table (All Records)
                 if split or (merchant_number and outside_agents):
                     cur.execute("""
-                        INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_id) DO UPDATE SET
                             partner_name = EXCLUDED.partner_name, 
                             office_code = EXCLUDED.office_code, 
@@ -92,9 +99,16 @@ def fetch_accounts_data(conn, cur, headers):
                             mpa_valor_portal_access = EXCLUDED.mpa_valor_portal_access,
                             mpa_valor_add_on_terminal = EXCLUDED.mpa_valor_add_on_terminal,
                             mpa_valor_virtual_terminal = EXCLUDED.mpa_valor_virtual_terminal,
-                            mpa_valor_ecommerce = EXCLUDED.mpa_valor_ecommerce;
-                    """, (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce))
-
+                            mpa_valor_ecommerce = EXCLUDED.mpa_valor_ecommerce,
+                            processor = EXCLUDED.processor,
+                            approved = EXCLUDED.approved,
+                            commission_amount = EXCLUDED.commission_amount,
+                            commission_pay_date = EXCLUDED.commission_pay_date,
+                            paid = EXCLUDED.paid,
+                            clawback = EXCLUDED.clawback,
+                            clawback_date = EXCLUDED.clawback_date;
+                    """, (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date))
+            
                 # ✅ Insert into Agents Table
                 if split:
                     cur.execute("""
@@ -114,8 +128,8 @@ def fetch_accounts_data(conn, cur, headers):
                 # ✅ Insert into Merchants Table
                 if merchant_number and outside_agents:
                     cur.execute("""
-                        INSERT INTO merchants (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO merchants (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_id) DO UPDATE 
                         SET merchant_number = EXCLUDED.merchant_number,
                             account_name = EXCLUDED.account_name,
@@ -128,8 +142,15 @@ def fetch_accounts_data(conn, cur, headers):
                             mpa_valor_portal_access = EXCLUDED.mpa_valor_portal_access,
                             mpa_valor_add_on_terminal = EXCLUDED.mpa_valor_add_on_terminal,
                             mpa_valor_virtual_terminal = EXCLUDED.mpa_valor_virtual_terminal,
-                            mpa_valor_ecommerce = EXCLUDED.mpa_valor_ecommerce;
-                    """, (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce))
+                            mpa_valor_ecommerce = EXCLUDED.mpa_valor_ecommerce,
+                            processor = EXCLUDED.processor,
+                            approved = EXCLUDED.approved,
+                            commission_amount = EXCLUDED.commission_amount,
+                            commission_pay_date = EXCLUDED.commission_pay_date,
+                            paid = EXCLUDED.paid,
+                            clawback = EXCLUDED.clawback,
+                            clawback_date = EXCLUDED.clawback_date;
+                    """, (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date))
 
 
             conn.commit()
@@ -310,14 +331,15 @@ def fetch_and_store_data():
     conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
     cur = conn.cursor()
     
+    
+    # ✅ Fetch and store Accounts data
+    fetch_accounts_data(conn, cur, headers)
+
     # ✅ Fetch and store Products data
     fetch_products_data(conn, cur, headers)
 
     # ✅ Fetch and store Orders data
     fetch_orders_data(conn, cur, headers)
-
-    # ✅ Fetch and store Accounts data
-    fetch_accounts_data(conn, cur, headers)
 
     cur.close()
     conn.close()

@@ -87,7 +87,7 @@ products_Merchant_Location_data = load_data_from_db("SELECT * FROM products_at_m
 
 # Agents & Merchants Queries
 agents_data = load_data_from_db("SELECT partner_name, office_code, office_code_2, split, split_2, pci_fee FROM agents;")
-merchants_data = load_data_from_db("SELECT merchant_number, account_name, account_status, sales_id, outside_agents,  pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
+merchants_data = load_data_from_db("SELECT merchant_number, account_name, account_status, sales_id, outside_agents,  pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
 
 
 # PCI Report Query
@@ -350,7 +350,6 @@ equipment_pivot_report = load_data_from_db("""
 
 
 
-
 # The Equipment Report for Agents
 equipment_agent_charges = load_data_from_db("""
     WITH equipment_pivot_report AS (
@@ -467,8 +466,6 @@ equipment_agent_charges = load_data_from_db("""
 
 
 
-
-
 # Load the Equipment Report for Agents
 equipment_agent_summary = load_data_from_db("""
     SELECT 
@@ -552,44 +549,49 @@ equipment_agent_summary = load_data_from_db("""
 """)
 
 
+# Commission Report Query
+commission_report = load_data_from_db("""
+    SELECT
+            account_name,
+            processor,
+            account_status,
+            approved,
+            date_approved,
+            sales_id,
+            outside_agents AS outside_agent,
+            commission_amount,
+            commission_pay_date,
+            paid,
+            clawback,
+            clawback_date
+        FROM zoho_accounts_table
+        WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
+        AND processor IS NOT NULL
+""")
 
+closed_commission_pending_clawback = load_data_from_db("""
+    SELECT 
+        outside_agents AS outside_agent,
+        account_name,
+        commission_amount,
+        commission_pay_date,
+        account_status,
+        clawback,
+        clawback_date
+    FROM zoho_accounts_table
+    WHERE 
+        commission_pay_date IS NOT NULL
+        AND clawback_date IS NULL
+        AND account_status = 'Closed';
+""")
 
-# Function to Fetch Product Location Data
-def fetch_product_locations():
-    query = """
-        SELECT location, COUNT(*) as count 
-        FROM products 
-        WHERE location IS NOT NULL 
-        GROUP BY location 
-        ORDER BY count DESC
-    """
-    with engine.connect() as conn:
-        return pd.read_sql(query, conn)
-    
-
-    
+ 
 ##############################################################################################################################################################################################    
 st.markdown("\n\n")  # Extra spacing
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Agents", "Merchants", "HW Visualization"])
-
-# Sub-navigation for HW Visualization
-if page == "HW Visualization":
-    sub_page = st.sidebar.radio("Select a Visualization", ["Product Locations", "Active Agents", "Available Product"])
-    
-    if sub_page == "Product Locations":
-        st.header("📍 Product Location Distribution")
-        product_locations_data = visualization.show_visualization(sub_page)
-    
-    elif sub_page == "Active Agents":
-        st.header("🤝 Active Agents")
-        product_locations_data = visualization.show_visualization(sub_page)
-        
-    elif sub_page == "Available Product":
-        st.header("📤 Available Product")
-        product_locations_data = visualization.show_visualization(sub_page)
+page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Commission Report", "Agents", "Merchants", "HW Visualization"])
 
 
 # Display Selected Page
@@ -675,3 +677,40 @@ elif page == "Equipment Report":
         st.dataframe(equipment_agent_summary)
     else:
         st.warning("No data available for pivot table.")
+
+    # Add a separator
+    st.markdown("---")
+
+elif page == "Commission Report":
+    st.header("🧾 Commission Report")
+    if commission_report is not None:
+        st.dataframe(commission_report)
+    else:
+        st.warning("No data available. Run the report script first.")
+
+    # Add a separator
+    st.markdown("---")
+
+    # Display Pivot Table: Closed Commissions Pending Clawback
+    st.header("📌 Closed Commissions Pending Clawback")
+    if closed_commission_pending_clawback is not None and not closed_commission_pending_clawback.empty:
+        st.dataframe(closed_commission_pending_clawback)
+    else:
+        st.warning("No data available for closed commissions with pending clawback.")
+
+
+# Sub-navigation for HW Visualization
+if page == "HW Visualization":
+    sub_page = st.sidebar.radio("Select a Visualization", ["Product Locations", "Active Agents", "Available Product"])
+    
+    if sub_page == "Product Locations":
+        st.header("📍 Product Location Distribution")
+        product_locations_data = visualization.show_visualization(sub_page)
+    
+    elif sub_page == "Active Agents":
+        st.header("🤝 Active Agents")
+        active_agent = visualization.show_visualization(sub_page)
+        
+    elif sub_page == "Available Product":
+        st.header("📤 Available Product")
+        available_product = visualization.show_visualization(sub_page)

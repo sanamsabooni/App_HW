@@ -63,7 +63,14 @@ def recreate_tables():
                     mpa_valor_portal_access TEXT,
                     mpa_Valor_add_on_terminal TEXT,
                     mpa_valor_virtual_terminal TEXT,
-                    mpa_valor_ecommerce TEXT
+                    mpa_valor_ecommerce TEXT,
+                    processor TEXT,
+                    approved TEXT,
+                    commission_amount TEXT,
+                    commission_pay_date TEXT,
+                    paid BOOLEAN,
+                    clawback TEXT,
+                    clawback_date DATE
                 );
                 """
 
@@ -96,7 +103,14 @@ def recreate_tables():
                     mpa_valor_portal_access TEXT,
                     mpa_Valor_add_on_terminal TEXT,
                     mpa_valor_virtual_terminal TEXT,
-                    mpa_valor_ecommerce TEXT
+                    mpa_valor_ecommerce TEXT,
+                    processor TEXT,
+                    approved TEXT,
+                    commission_amount TEXT,
+                    commission_pay_date TEXT,
+                    paid BOOLEAN,
+                    clawback TEXT,
+                    clawback_date DATE
                 );
                 """
 
