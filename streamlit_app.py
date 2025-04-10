@@ -3,6 +3,11 @@ import pandas as pd
 from utils.db_utils import get_db_connection  # Ensure this function is correctly implemented
 import matplotlib.pyplot as plt
 import visualization  # Import visualization for HW Visualization
+from merchant_chatbot import run_chatbot
+
+from pci_report_oo import PCIReport
+from equipment_oo import EquipmentReport
+from pci_report_oo import PCIReport
 
 # Page Configuration
 st.set_page_config(page_title="HubWallet Reports", layout="wide")
@@ -86,8 +91,8 @@ products_full_data = load_data_from_db("SELECT * FROM zoho_products_table;")
 products_Merchant_Location_data = load_data_from_db("SELECT * FROM products_at_merchants_table;")
 
 # Agents & Merchants Queries
-agents_data = load_data_from_db("SELECT partner_name, office_code, office_code_2, split, split_2, pci_fee FROM agents;")
-merchants_data = load_data_from_db("SELECT merchant_number, account_name, account_status, sales_id, outside_agents,  pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
+agents_data = load_data_from_db("SELECT * FROM agents;")
+merchants_data = products_full_data = load_data_from_db("SELECT * FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
 
 
 # PCI Report Query
@@ -591,7 +596,7 @@ st.markdown("\n\n")  # Extra spacing
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Commission Report", "Agents", "Merchants", "HW Visualization"])
+page = st.sidebar.radio("Go to", ["Count Tables", "Accounts Full Data", "Orders Full Data", "Products Full Data", "PCI Report", "Equipment Report", "Commission Report", "Agents", "Merchants", "ChatBot" , "HW Visualization"])
 
 
 # Display Selected Page
@@ -698,9 +703,13 @@ elif page == "Commission Report":
     else:
         st.warning("No data available for closed commissions with pending clawback.")
 
+elif page == "ChatBot":
+    sub_page = st.header("🤖 HubWallet ChatBot")
+    product_locations_data = run_chatbot()
+
 
 # Sub-navigation for HW Visualization
-if page == "HW Visualization":
+elif page == "HW Visualization":
     sub_page = st.sidebar.radio("Select a Visualization", ["Product Locations", "Active Agents", "Available Product"])
     
     if sub_page == "Product Locations":

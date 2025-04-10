@@ -6,7 +6,6 @@ from database import get_db_connection
 # Database Connection
 engine = get_db_connection()
 
-
 def fetch_inventory_on_site_products():
     query = """
         SELECT LOWER(TRIM(product_name)) AS normalized_name, COUNT(*) as count 
@@ -27,8 +26,6 @@ def fetch_inventory_on_site_products():
         return df
     finally:
         conn.close()
-
-
         
 def fetch_active_agent_table():
     query = """
@@ -53,10 +50,6 @@ def fetch_active_agent_table():
         return df
     finally:
         conn.close()
-
-
-
-
 
 # Function to Fetch Product Location Data for "Inventory On Site"
 def fetch_inventory_on_site_products():
@@ -105,7 +98,6 @@ def fetch_product_locations():
 # Format percentage labels
 def autopct_format(pct):
     return f'{pct:.1f}%' if pct >= 3 else ''  # Hide percentages less than 3%
-
 
 def show_visualization(sub_page=None):
     if sub_page == "Product Locations":

@@ -79,7 +79,7 @@ def fetch_accounts_data(conn, cur, headers):
                 # ✅ Insert into zoho_accounts_table (All Records)
                 if split or (merchant_number and outside_agents):
                     cur.execute("""
-                        INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date)
+                        INSERT INTO zoho_accounts_table (account_id, partner_name, office_code, office_code_2, split, split_2, pci_fee, merchant_number, account_status, sales_id, outside_agents, pci_amnt, account_name, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_id) DO UPDATE SET
                             partner_name = EXCLUDED.partner_name, 
@@ -128,8 +128,8 @@ def fetch_accounts_data(conn, cur, headers):
                 # ✅ Insert into Merchants Table
                 if merchant_number and outside_agents:
                     cur.execute("""
-                        INSERT INTO merchants (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce, processor, approved, commission_amount, commission_pay_date, paid, clawback, clawback_date)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        INSERT INTO merchants (account_id, merchant_number, account_name, account_status, sales_id, outside_agents, pci_amnt, date_approved, mpa_wireless_fee, mpa_valor_portal_access, mpa_valor_add_on_terminal, mpa_valor_virtual_terminal, mpa_valor_ecommerce)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (account_id) DO UPDATE 
                         SET merchant_number = EXCLUDED.merchant_number,
                             account_name = EXCLUDED.account_name,
