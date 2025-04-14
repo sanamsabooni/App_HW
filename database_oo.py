@@ -81,7 +81,6 @@ def recreate_tables():
 
                 create_pci_report_table_sql = """
                 CREATE TABLE pci_report_table (
-                    id SERIAL PRIMARY KEY,
                     merchant_number TEXT,
                     account_name TEXT,
                     sales_id TEXT,
@@ -94,6 +93,7 @@ def recreate_tables():
                     pci_share NUMERIC,
                     max_share NUMERIC
                 );
+
                 """
 
                 create_equipment_report_table_sql = """
@@ -127,6 +127,7 @@ def recreate_tables():
                     mpa_valor_virtual_terminal TEXT,
                     mpa_valor_ecommerce TEXT
                 );
+
                 """
 
                 create_equipment_pivot_table_sql = """
