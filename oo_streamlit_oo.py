@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 import visualization  # Import visualization for HW Visualization
 from merchant_chatbot import run_chatbot
 
-from pci_report_oo import PCIReport
-from equipment_oo import EquipmentReport
+from oo_pci_report_oo import PCIReport
+from oo_equipment_oo import EquipmentReport
 
 from commission_report_oo import CommissionReport
 
-from equipment_oo import EquipmentReport
+from oo_equipment_oo import EquipmentReport
 
-from tables_oo import TableStats
+from oo_tables_oo import TableStats
 
 # Page Configuration
 st.set_page_config(page_title="HubWallet Reports", layout="wide")
