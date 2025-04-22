@@ -8,7 +8,7 @@ from merchant_chatbot import run_chatbot
 from oo_pci_report_oo import PCIReport
 from oo_equipment_oo import EquipmentReport
 
-from commission_report_oo import CommissionReport
+from oo_commission_report_oo import CommissionReport
 
 from oo_equipment_oo import EquipmentReport
 
@@ -68,8 +68,8 @@ products_full_data = load_data_from_db("SELECT * FROM zoho_products_table;")
 products_Merchant_Location_data = load_data_from_db("SELECT * FROM products_at_merchants_table;")
 
 # Agents & Merchants Queries
-agents_data = load_data_from_db("SELECT * FROM agents;")
-merchants_data = products_full_data = load_data_from_db("SELECT * FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
+agents_data = load_data_from_db("SELECT * FROM agents_table;")
+merchants_data = products_full_data = load_data_from_db("SELECT * FROM merchants_table WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
 
 
 # 📄 PCI Report

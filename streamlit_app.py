@@ -55,9 +55,9 @@ tables_query = """
     UNION ALL 
     SELECT 'Products' AS table_name, COUNT(*) AS row_count FROM products_at_merchants_table
     UNION ALL 
-    SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents 
+    SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents_table 
     UNION ALL 
-    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants;
+    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants_table;
 """
 count_tables = load_data_from_db(tables_query)
 
@@ -75,9 +75,9 @@ count_tables = load_data_from_db("""
     UNION ALL 
     SELECT 'Products' AS table_name, COUNT(*) AS row_count FROM products_at_merchants_table
     UNION ALL
-    SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents 
+    SELECT 'Agents' AS table_name, COUNT(*) AS row_count FROM agents_table 
     UNION ALL 
-    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants;
+    SELECT 'Merchants' AS table_name, COUNT(*) AS row_count FROM merchants_table;
 """)
 
 
@@ -91,8 +91,8 @@ products_full_data = load_data_from_db("SELECT * FROM zoho_products_table;")
 products_Merchant_Location_data = load_data_from_db("SELECT * FROM products_at_merchants_table;")
 
 # Agents & Merchants Queries
-agents_data = load_data_from_db("SELECT * FROM agents;")
-merchants_data = products_full_data = load_data_from_db("SELECT * FROM merchants WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
+agents_data = load_data_from_db("SELECT * FROM agents_table;")
+merchants_data = products_full_data = load_data_from_db("SELECT * FROM merchants_table WHERE sales_id ~ '^[A-Za-z]{2}[0-9]{2}$';")
 
 
 # PCI Report Query
@@ -161,8 +161,8 @@ pci_report = load_data_from_db("""
                                 END, 0), 2)) * 0.15, 2)
         END AS max_share
 
-    FROM merchants m
-    LEFT JOIN agents a
+    FROM merchants_table m
+    LEFT JOIN agents_table a
         ON TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code))
         OR TRIM(LOWER(m.sales_id)) = TRIM(LOWER(a.office_code_2))
     WHERE m.sales_id ~ '^[A-Za-z]{2}[0-9]{2}$'
@@ -222,7 +222,7 @@ equipment_report = load_data_from_db("""
         m.mpa_valor_ecommerce
 
     FROM zoho_orders_table o
-    LEFT JOIN merchants m
+    LEFT JOIN merchants_table m
         ON o.merchant_number = m.merchant_number;
 """)
 
@@ -348,8 +348,8 @@ equipment_pivot_report = load_data_from_db("""
         WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
         GROUP BY merchant_number
     ) AS sub
-    LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
-    LEFT JOIN agents a ON m.sales_id IN (a.office_code, a.office_code_2)
+    LEFT JOIN merchants_table m ON sub.merchant_number = m.merchant_number
+    LEFT JOIN agents_table a ON m.sales_id IN (a.office_code, a.office_code_2)
     ORDER BY "Valor Count" DESC;
 """)
 
@@ -446,15 +446,26 @@ equipment_agent_charges = load_data_from_db("""
         FROM (
             SELECT 
                 merchant_number,
-                SUM(CASE WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma') THEN 1 ELSE 0 END) AS "Terminal Count",
-                SUM(CASE WHEN LOWER(communication_type) = 'gateway' THEN 1 ELSE 0 END) AS "Gateway Count",
-                SUM(CASE WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') THEN 1 ELSE 0 END) AS "Valor Count"
+                SUM(CASE 
+                    WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma') AND status ILIKE 'complete' 
+                    THEN 1 ELSE 0 
+                END) AS "Terminal Count",
+                SUM(CASE 
+                    WHEN LOWER(communication_type) = 'gateway' AND status ILIKE 'complete' 
+                    THEN 1 ELSE 0 
+                END) AS "Gateway Count",
+                SUM(CASE 
+                    WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') AND status ILIKE 'complete' 
+                    THEN 1 ELSE 0 
+                END) AS "Valor Count"
             FROM zoho_orders_table
-            WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
+            WHERE merchant_number IS NOT NULL 
+            AND TRIM(merchant_number) <> ''
             GROUP BY merchant_number
         ) AS sub
-        LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
-        LEFT JOIN agents a ON m.sales_id IN (a.office_code, a.office_code_2)
+
+        LEFT JOIN merchants_table m ON sub.merchant_number = m.merchant_number
+        LEFT JOIN agents_table a ON m.sales_id IN (a.office_code, a.office_code_2)
         WHERE m.outside_agents IS NOT NULL AND TRIM(m.outside_agents) <> ''
     )
 
@@ -541,14 +552,14 @@ equipment_agent_summary = load_data_from_db("""
         SELECT 
             merchant_number,
             SUM(CASE WHEN LOWER(communication_type) IN ('wireless - gprs', 'wireless - cdma') THEN 1 ELSE 0 END) AS "Terminal Count",
-            SUM(CASE WHEN LOWER(communication_type) = 'gateway' THEN 1 ELSE 0 END) AS "Gateway Count",
+            SUM(CASE WHEN LOWER(communication_type) = 'gateway' THEN 1 ELSE 0 END) AS "Gateway Count", valor_gateway######################################################
             SUM(CASE WHEN LOWER(terminal_detail) IN ('vp550', 'vl100', 'vl110', 'vl100 pro') THEN 1 ELSE 0 END) AS "Valor Count"
         FROM zoho_orders_table
         WHERE merchant_number IS NOT NULL AND TRIM(merchant_number) <> ''
         GROUP BY merchant_number
     ) AS sub
-    LEFT JOIN merchants m ON sub.merchant_number = m.merchant_number
-    LEFT JOIN agents a ON m.sales_id IN (a.office_code, a.office_code_2)
+    LEFT JOIN merchants_table m ON sub.merchant_number = m.merchant_number
+    LEFT JOIN agents_table a ON m.sales_id IN (a.office_code, a.office_code_2)
     GROUP BY m.outside_agents
     ORDER BY "Total Agent Share" DESC;
 """)

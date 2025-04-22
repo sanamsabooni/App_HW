@@ -72,15 +72,15 @@ def run_chatbot():
 
         # General Queries
         if intent == "unpaid_merchants":
-            sql = "SELECT merchant_number, account_name, paid FROM merchants WHERE paid = false"
+            sql = "SELECT merchant_number, account_name, paid FROM merchants_table WHERE paid = false"
             result = run_query(sql)
 
         elif intent == "clawbacks":
-            sql = "SELECT merchant_number, account_name, clawback, clawback_date FROM merchants WHERE clawback IS NOT NULL"
+            sql = "SELECT merchant_number, account_name, clawback, clawback_date FROM merchants_table WHERE clawback IS NOT NULL"
             result = run_query(sql)
 
         elif intent == "high_split_agents":
-            sql = "SELECT partner_name, account_name, split FROM agents WHERE split::float > 0.8"
+            sql = "SELECT partner_name, account_name, split FROM agents_table WHERE split::float > 0.8"
             result = run_query(sql)
 
         elif intent == "orders" and not merchant_number:
@@ -106,7 +106,7 @@ def run_chatbot():
             elif intent == "commission":
                 sql = """
                     SELECT account_name, commission_amount, commission_pay_date
-                    FROM merchants
+                    FROM merchants_table
                     WHERE merchant_number = %s
                 """
                 result = run_query(sql, (merchant_number,))
@@ -120,7 +120,7 @@ def run_chatbot():
                 result = run_query(sql, (merchant_number,))
 
             else:
-                sql = "SELECT * FROM merchants WHERE merchant_number = %s"
+                sql = "SELECT * FROM merchants_table WHERE merchant_number = %s"
                 result = run_query(sql, (merchant_number,))
 
         else:
